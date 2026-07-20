@@ -1,4 +1,4 @@
-# e2e-models-from-scratch
+# E2E-AD-Implementation-Series
 
 This is a hands-on reimplementation series for learning how end-to-end autonomous driving evolved, from direct pixel-to-control imitation to real-time diffusion planning. The models are ordered by the architectural ideas they introduce, and each will eventually live in its own sub-repository. Nothing has been implemented yet; every model is planned.
 
