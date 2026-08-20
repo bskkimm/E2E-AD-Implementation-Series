@@ -1,6 +1,6 @@
 # E2E-AD-Implementation-Series
 
-This is a hands-on reimplementation series for learning how end-to-end autonomous driving evolved, from direct pixel-to-control imitation to real-time diffusion planning. The models are ordered by the architectural ideas they introduce, and each will eventually live in its own sub-repository. Nothing has been implemented yet; every model is planned.
+This is a hands-on reimplementation series for learning how end-to-end autonomous driving evolved, from direct pixel-to-control imitation to real-time diffusion planning. The models are ordered by the architectural ideas they introduce, and each lives or will eventually live in its own sub-repository. PilotNet is implemented; the remaining models are planned.
 
 ## Why this series exists
 
@@ -44,7 +44,7 @@ It is a sequence of increasingly rich answers to the same question: what should 
 
 | # | Model (year) | One-line lesson | Paradigm shift | Status | Sub-repo |
 |---:|---|---|---|---|---|
-| 1 | [PilotNet (NVIDIA, 2016)](https://arxiv.org/abs/1604.07316) | A CNN can map raw pixels directly to steering; behavioral cloning reveals saliency and covariate shift. | End-to-end learning is viable at all. | 🔜 Planned | (coming soon) |
+| 1 | [PilotNet (NVIDIA, 2016)](https://arxiv.org/abs/1604.07316) | A CNN can map raw pixels directly to steering; behavioral cloning reveals saliency and covariate shift. | End-to-end learning is viable at all. | ✅ Implemented | [PilotNet-from-scratch](https://github.com/bskkimm/PilotNet-from-scratch) |
 | 2 | [CILRS (2019)](https://arxiv.org/abs/1904.08980) | Command-conditioned branched policies resolve intersection ambiguity; a speed head exposes causal confusion and the inertia problem. | Direct control -> navigation-conditioned control. | 🔜 Planned | (coming soon) |
 | 3 | [Learning by Cheating (LBC) (2019/2020)](https://arxiv.org/abs/1912.12294) | Split "learning to see" from "learning to act" with a privileged BEV teacher, a camera student, and waypoint-plus-PID control; include a ChauffeurNet-style trajectory-perturbation ablation. | Expert imitation -> privileged teacher-student learning. | 🔜 Planned | (coming soon) |
 | 4 | [TransFuser](https://arxiv.org/abs/2104.09224) + [TCP extension](https://arxiv.org/abs/2206.08129) (2021/2022) | Attention fuses camera and LiDAR BEV features across scales; TCP adds dual trajectory and control branches with situation-based fusion. | Single-sensor learning -> multimodal transformer fusion. | 🔜 Planned | (coming soon) |
@@ -54,19 +54,18 @@ It is a sequence of increasingly rich answers to the same question: what should 
 | 8 | [Diffusion Planner (2025, ICLR Oral)](https://arxiv.org/abs/2501.15564) | A DiT-style model over structured inputs jointly generates ego and neighbor trajectories with flexible classifier guidance. | Deterministic regression -> generative multimodal planning. | 🔜 Planned | (coming soon) |
 | 9 | [DiffusionDrive (2024/2025, CVPR Highlight)](https://arxiv.org/abs/2411.15139) | Truncated, anchor-based diffusion makes generative planning real-time inside a sensor-based end-to-end stack. | Structured generative planning -> real-time sensor-based generative planning. | 🔜 Planned | (coming soon) |
 
-All entries are plans, not completed reproductions.
-The eventual sub-repositories will hold implementation notes, code, experiment configuration, and results; this repository will remain a compact index.
+PilotNet is implemented; models 2 through 9 remain planned.
+The sub-repositories hold implementation notes, code, experiment configuration, and results; this repository remains a compact index.
 
 ## Model notes
 
 ### 1. PilotNet (NVIDIA, 2016)
 
-[PilotNet](https://arxiv.org/abs/1604.07316) is the minimal starting point: a convolutional network maps a front-facing image directly to a steering command.
+[PilotNet](https://arxiv.org/abs/1604.07316) is the minimal starting point: a convolutional network maps a front-facing image directly to a steering command. The [PilotNet-from-scratch implementation](https://github.com/bskkimm/PilotNet-from-scratch) includes the architecture, CSV behavioral-cloning workflow, validation entry point, and public dataset documentation.
 Its key lesson is that behavioral cloning can learn useful road features without explicit perception labels, while also exposing covariate shift when the learned policy leaves the training distribution.
-I plan a clean reimplementation of the network, training objective, augmentations, and saliency analysis using an appropriately scoped driving-image dataset inspired by NVIDIA's collected road data.
-The goal is architectural understanding, not a claim of reproducing NVIDIA's private dataset or reported performance.
+The implementation focuses on architectural understanding and documents the use of public substitute data; it does not claim to reproduce NVIDIA's private dataset or reported driving performance.
 
-**Sub-repo:** (coming soon)
+**Sub-repo:** [PilotNet-from-scratch](https://github.com/bskkimm/PilotNet-from-scratch)
 
 ### 2. CILRS (2019)
 
