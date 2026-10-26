@@ -57,84 +57,53 @@ It is a sequence of increasingly rich answers to the same question: what should 
 PilotNet is implemented; models 2 through 9 remain planned.
 The sub-repositories hold implementation notes, code, experiment configuration, and results; this repository remains a compact index.
 
-## Model notes
+Short explanations and implementation scope: [Model notes](MODEL_NOTES.md).
 
-### 1. PilotNet (NVIDIA, 2016)
+## Model comparison
 
-[PilotNet](https://arxiv.org/abs/1604.07316) is the minimal starting point: a convolutional network maps a front-facing image directly to a steering command. The [PilotNet-from-scratch implementation](https://github.com/bskkimm/PilotNet-from-scratch) includes the architecture, CSV behavioral-cloning workflow, validation entry point, and public dataset documentation.
-Its key lesson is that behavioral cloning can learn useful road features without explicit perception labels, while also exposing covariate shift when the learned policy leaves the training distribution.
-The implementation focuses on architectural understanding and documents the use of public substitute data; it does not claim to reproduce NVIDIA's private dataset or reported driving performance.
+The columns differ by group. For sensor-based end-to-end models, compare the sensors, intermediate representations, training, and evaluation. For vision-language models (VLMs) and vision-language-action models (VLAs), compare the language backbone, what language does, and how actions are produced. Learning-based planners start from structured scene inputs rather than raw sensors.
 
-**Sub-repo:** [PilotNet-from-scratch](https://github.com/bskkimm/PilotNet-from-scratch)
+★ marks models already selected for the implementation series above. Other entries provide context, not additional implementation commitments. Years below refer to the first preprint; conference publication can be later (for example, UniAD appeared at CVPR 2023).
 
-### 2. CILRS (2019)
+BEV means bird's-eye view; ego means the vehicle being controlled. PID is a feedback controller that converts waypoints into steering and acceleration commands. Imitation learning trains on expert demonstrations; reinforcement learning (RL) trains from rewards. Open-loop evaluation compares predictions with recorded futures; closed-loop evaluation executes the policy and observes the resulting driving behavior.
 
-[CILRS](https://arxiv.org/abs/1904.08980) extends direct control with high-level navigation commands and separate branches for maneuvers such as turning and following a lane.
-The key idea is that conditioning removes action ambiguity at intersections, while the auxiliary speed prediction head makes causal confusion and the inertia problem concrete.
-I plan a clean, scoped reimplementation and closed-loop evaluation in CARLA 0.9.10.1.
-The implementation will emphasize branch selection, command-balanced data, and recovery behavior rather than broad benchmark coverage.
+### A. End-to-end (non-VLM)
 
-**Sub-repo:** (coming soon)
+| Year | Model | Novelty | Sensor input | Intermediate representation | Output | Training | Evaluation |
+|---|---|---|---|---|---|---|---|
+| 2016 | ★ [PilotNet](https://arxiv.org/abs/1604.07316) | Pixels map directly to steering | Front camera | No explicit scene representation | Steering | Imitation | Recorded-data simulation + real-road tests (closed-loop) |
+| 2019 | ★ [CILRS](https://arxiv.org/abs/1904.08980) | Command-branched policy with an auxiliary speed head | Front camera, speed, command | No explicit scene representation | Steering, throttle, brake | Imitation | CARLA NoCrash (closed-loop) |
+| 2019 | ★ [LBC](https://arxiv.org/abs/1912.12294) | Privileged teacher distilled into a camera student | Front camera, speed, command | Ground-truth BEV (teacher only) | Waypoints → PID | Imitation + distillation | CARLA NoCrash (closed-loop) |
+| 2021 | [Roach](https://arxiv.org/abs/2108.08265) | RL expert replaces a rule-based expert as teacher | Camera, speed, command (student) | Privileged BEV (teacher only) | Steering, throttle, brake | RL teacher → imitation student | CARLA NoCrash / Leaderboard (closed-loop) |
+| 2021/2022 | ★ [TransFuser](https://arxiv.org/abs/2104.09224) + [TCP](https://arxiv.org/abs/2206.08129) | TransFuser fuses camera and LiDAR with attention; TCP combines trajectory and control branches | TransFuser: camera + LiDAR; TCP: front camera; both use ego/navigation inputs | TransFuser: fused image/BEV features; TCP: image features + trajectory/control hidden states | TransFuser: waypoints → PID; TCP: waypoints + control | Imitation | CARLA Longest6 / Leaderboard (closed-loop; varies by paper/version) |
+| 2022 | ★ [UniAD](https://arxiv.org/abs/2212.10156) | Query-based tracking, mapping, motion, and occupancy feed planning | Multi-camera + ego/navigation inputs | Track, map, motion, and occupancy queries | Ego trajectory (3 s) | Multi-task imitation | nuScenes (open-loop) |
+| 2023 | ★ [VAD](https://arxiv.org/abs/2303.12077) | Vectorized agents and map act as planning constraints | Multi-camera + ego/navigation inputs | Vectorized agents and map elements | Ego trajectory (3 s) | Imitation with auxiliary perception/prediction supervision | nuScenes (open-loop) + CARLA (closed-loop) |
+| 2023 | [AD-MLP](https://arxiv.org/abs/2305.10430) | Ego-state-only baseline exposes weaknesses in open-loop evaluation | Ego status only; no scene sensors | No explicit scene representation | Ego trajectory | Imitation | nuScenes (open-loop) |
+| 2024 | [SparseDrive](https://arxiv.org/abs/2405.19620) | Fully sparse scene representation; motion and planning predicted in parallel | Multi-camera + ego/navigation inputs | Sparse agent and map instances | Candidate ego trajectories + collision-aware selection | Multi-task imitation | nuScenes (open-loop) |
+| 2024 | ★ [DiffusionDrive](https://arxiv.org/abs/2411.15139) | Truncated diffusion starts from trajectory anchors for real-time planning | Camera + LiDAR + ego state | TransFuser BEV features | Candidate ego trajectories + scores; selected ego trajectory | Imitation (diffusion) | NAVSIM (non-reactive simulation-based evaluation) |
+| 2025 | [RAD](https://arxiv.org/abs/2502.13144) | RL in 3D Gaussian Splatting reconstructions of real scenes | Multi-camera sequences | BEV features, map tokens, and agent tokens | Discrete lateral and longitudinal actions | Perception + imitation pre-training → RL | Reconstructed 3DGS scenes (closed-loop) |
 
-### 3. Learning by Cheating (LBC) (2019/2020)
+AD-MLP is included as an evaluation diagnostic: low trajectory error alone does not establish that a model understands the scene or can drive successfully. In RAD, 3D Gaussian Splatting (3DGS) reconstructs a scene so cameras can be rendered from new viewpoints.
 
-[LBC](https://arxiv.org/abs/1912.12294) first trains a privileged BEV teacher and then distills its behavior into a camera-only student.
-Its central move is to separate learning to act from learning to see, predict waypoints instead of raw controls, and use PID for actuation.
-I plan a clean reimplementation in CARLA 0.9.10.1, including a focused ChauffeurNet-style trajectory-perturbation ablation for recovery supervision.
-The scope will preserve the teacher-student mechanism while keeping data generation and route evaluation feasible on one workstation.
+### B. VLM/VLA end-to-end
 
-**Sub-repo:** (coming soon)
+| Year | Model | Novelty | Input | VLM backbone | Language role | Action output | Evaluation |
+|---|---|---|---|---|---|---|---|
+| 2023 | [DriveLM](https://arxiv.org/abs/2312.14150) | Connects perception, prediction, and planning through a graph of questions and answers | Camera views + questions | BLIP-2 (Flan-T5-XL) | Graph-structured visual question answering | Trajectory coordinates encoded as discrete language tokens | DriveLM-nuScenes / DriveLM-CARLA (open-loop) |
+| 2023 | [LMDrive](https://arxiv.org/abs/2312.07488) | Language-guided end-to-end driving evaluated in closed loop | Multi-camera + LiDAR + instructions | LLaVA-v1.5; LLaMA/Vicuna alternatives studied | Navigation instructions and notices | Waypoints from an adapter head → PID | CARLA LangAuto (closed-loop) |
+| 2024 | [DriveVLM / DriveVLM-Dual](https://arxiv.org/abs/2402.12289) | Scene reasoning and hierarchical planning; Dual pairs the slow VLM with a fast conventional driving stack | Multi-frame camera; Dual also uses the conventional stack's inputs | Qwen-VL | Chain-of-thought: describe → analyze → plan | Coarse trajectory; Dual refines it with a conventional planner | nuScenes planning + SUP-AD scene understanding (open-loop) |
+| 2024 | [EMMA (Waymo)](https://arxiv.org/abs/2410.23262) | One multimodal model represents driving tasks through text inputs and outputs | Surround cameras + navigation and ego history as text | Gemini | Task prompts, text representations, and chain-of-thought rationale | Trajectory as text tokens | nuScenes, WOMD (open-loop) |
+| 2025 | [SimLingo](https://arxiv.org/abs/2503.09594) | Aligns language and driving actions through action dreaming | Front camera + speed + navigation (target points or language) | InternVL2-1B (Qwen2-0.5B-Instruct language model) | Visual question answering, commentary, and instructions | Path waypoints + speed waypoints | CARLA Leaderboard 2.0, Bench2Drive (closed-loop) |
+| 2025 | [Alpamayo-R1 (NVIDIA)](https://arxiv.org/abs/2511.00088) | Reasoning VLA with causal reasoning traces and RL post-training | Multi-camera video + ego-motion history; optional navigation | Cosmos-Reason | Causal reasoning traces linked to driving decisions | Continuous trajectory from a flow-matching decoder | Closed-loop simulation + real-road demonstration |
 
-### 4. TransFuser (+TCP extension) (2021/2022)
+### C. Learning-based planning (structured input → learned model → trajectory)
 
-[TransFuser](https://arxiv.org/abs/2104.09224) uses transformer attention to exchange information between camera and LiDAR BEV feature streams at multiple scales.
-The [TCP extension](https://arxiv.org/abs/2206.08129) adds trajectory and direct-control branches, then chooses how to combine them from the driving situation.
-I plan an official-repository-based reproduction in CARLA 0.9.10.1, adapted only where necessary for current PyTorch.
-The study will isolate what attention-based fusion and the dual-output design each contribute.
-
-**Sub-repo:** (coming soon)
-
-### 5. PlanT (2022)
-
-[PlanT](https://arxiv.org/abs/2210.14222) replaces dense scene features with compact tokens for vehicles, route elements, and other relevant objects.
-Its key idea is that a transformer planner can reason directly over entities, with attention offering a limited but useful view into object relevance.
-I plan an official-repository-based reproduction of the privileged planner in CARLA 0.9.10.1, with reduced data volume if required.
-This stage focuses on token construction, masking, waypoint prediction, and attention analysis rather than rebuilding a full perception front end.
-
-**Sub-repo:** (coming soon)
-
-### 6. UniAD (2023, CVPR Best Paper)
-
-[UniAD](https://arxiv.org/abs/2212.10156) connects tracking, online mapping, motion forecasting, occupancy prediction, and planning through query-based interfaces in one planning-oriented network.
-Its key lesson is not merely multitask learning, but coordinated task representations optimized toward the final planning objective.
-Before it, I plan two short drills: a mini VectorNet polyline encoder and a mini Lift-Splat camera-to-BEV module.
-The main work will be an official-repository-based reduced reproduction on nuScenes that retains the task interfaces while using a practical training recipe.
-
-**Sub-repo:** (coming soon)
-
-### 7. VAD (+VADv2 ablation) (2023/2024)
-
-[VAD](https://arxiv.org/abs/2303.12077) represents agents and map elements as vectors and uses those instances as explicit constraints for ego planning.
-This removes much of the dense rasterized BEV reasoning used by earlier unified systems; the [VADv2](https://arxiv.org/abs/2402.13243) ablation adds a probabilistic trajectory-vocabulary head.
-I plan an official-repository-based reduced reproduction on nuScenes with smaller backbones, shorter schedules, and carefully bounded ablations.
-The target is to understand vectorized constraints and probabilistic planning, not to reproduce published benchmark numbers.
-
-**Sub-repo:** (coming soon)
-
-### 8. Diffusion Planner (2025, ICLR Oral)
-
-[Diffusion Planner](https://arxiv.org/abs/2501.15564) applies a DiT-style denoiser to structured map and agent-history inputs and jointly samples ego and neighboring trajectories.
-Its key contribution for this series is the transition from one regressed future to multimodal generation, with classifier guidance available at inference time.
-I plan an official-repository-based reproduction on nuPlan with a focused training and evaluation scope.
-The core target is faithful diffusion training, sampling, and guidance behavior rather than exhaustive closed-loop evaluation.
-
-**Sub-repo:** (coming soon)
-
-### 9. DiffusionDrive (2024/2025, CVPR Highlight)
-
-[DiffusionDrive](https://arxiv.org/abs/2411.15139) places a truncated diffusion decoder behind learned sensor features and starts denoising from multimodal trajectory anchors.
-Its key idea is that strong priors and a short schedule can preserve diverse outputs while meeting real-time planning constraints.
-I plan an official-repository-based reproduction on NAVSIM without changing the central anchor-based diffusion mechanism.
-This final stage connects generative planning back to a practical sensor-based end-to-end stack.
-
-**Sub-repo:** (coming soon)
+| Year | Model | Novelty | Input | Output |
+|---|---|---|---|---|
+| 2018 | [ChauffeurNet](https://arxiv.org/abs/1812.03079) | Mid-level BEV representation; perturbed training examples teach recovery | Raster BEV: map, traffic lights, route, agent boxes/history, and ego past | Ego waypoints, heading, and speed + auxiliary heads |
+| 2021 | [Urban Driver](https://arxiv.org/abs/2109.13333) | Closed-loop imitation training with policy gradients in a differentiable simulator | Vectorized agents, map, and ego history | Ego trajectory |
+| 2022 | ★ [PlanT](https://arxiv.org/abs/2210.14222) | Transformer over object tokens; attention helps inspect object relevance | Vehicle and route tokens from privileged CARLA state | Ego waypoints + auxiliary vehicle forecasts |
+| 2023 | [GameFormer](https://arxiv.org/abs/2303.05760) | Iterative interaction prediction and planning using level-k reasoning (each level responds to the previous level's predictions) | Vectorized agents, map, and ego state | Ego + agent trajectories |
+| 2023 | [PlanTF](https://arxiv.org/abs/2309.10443) | Diagnoses ego-state shortcuts; combines state dropout and data augmentation | Vectorized agents, map, and current ego state (no ego history) | Ego trajectory + agent predictions |
+| 2024 | [PLUTO](https://arxiv.org/abs/2404.14327) | Contrastive imitation learning with lateral/longitudinal candidate queries | Vectorized agents, map, static obstacles, and ego state | Candidate ego trajectories + scores |
+| 2025 | ★ [Diffusion Planner](https://arxiv.org/abs/2501.15564) | Diffusion transformer jointly denoises ego and neighbor trajectories; guidance applied at inference | Vectorized agent histories, lanes, route, and ego state | Ego + neighbor trajectories |
