@@ -1,6 +1,6 @@
 # Model notes
 
-Short explanations and implementation scope for the nine models in the [implementation series](README.md#the-series). PilotNet is implemented; the remaining models are planned.
+Short explanations and implementation scope for the nine models in the [implementation series](README.md#model-comparison). PilotNet is implemented; the remaining models are planned.
 
 ## 1. PilotNet (NVIDIA, 2016)
 
