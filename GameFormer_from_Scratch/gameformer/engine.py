@@ -6,6 +6,7 @@ import os
 import platform
 import random
 import subprocess
+import tempfile
 import time
 from contextlib import nullcontext
 from dataclasses import asdict
@@ -14,7 +15,7 @@ from typing import Any
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, RandomSampler
 
 from .config import RunConfig
 from .data import SceneDataset, SyntheticDataset, assert_disjoint
@@ -62,9 +63,15 @@ def make_loaders(config: RunConfig, generator: torch.Generator):
             persistent_workers=config.persistent_workers,
             timeout=config.loader_timeout,
         )
-    # Each loader owns a generator; validation must not advance the shuffle RNG.
+    # Worker startup consumes a base seed only when workers start. Persistent
+    # workers restart after resume, so their RNG must never advance the sampler.
     return (
-        DataLoader(train, shuffle=True, generator=generator, **options),
+        DataLoader(
+            train,
+            sampler=RandomSampler(train, generator=generator),
+            generator=torch.Generator().manual_seed(config.seed + 2),
+            **options,
+        ),
         DataLoader(
             validation,
             shuffle=False,
@@ -172,8 +179,10 @@ def atomic_checkpoint(path: Path, payload: dict) -> float:
 def load_checkpoint(path: str | Path) -> dict:
     # Only load checkpoints produced by this project from a trusted local source.
     checkpoint = torch.load(path, map_location="cpu", weights_only=False)
-    if checkpoint.get("schema_version") != 1:
-        raise ValueError("Unsupported checkpoint schema")
+    if checkpoint.get("schema_version") != 2:
+        raise ValueError(
+            "Unsupported checkpoint schema; schema 2 requires independent sampler/data identity"
+        )
     return checkpoint
 
 
@@ -212,19 +221,32 @@ def config_fingerprint(config: RunConfig):
     return value
 
 
+def dataset_identity(config: RunConfig) -> dict[str, Any]:
+    if config.synthetic:
+        return {
+            "kind": "synthetic",
+            "seed": config.seed,
+            "train_size": config.train_size,
+            "validation_size": config.validation_size,
+        }
+    manifests = {}
+    for split, directory in (("train", config.train_data), ("validation", config.validation_data)):
+        path = Path(directory) / "manifest.json"
+        if not directory or not path.is_file():
+            raise ValueError(f"Real dataset requires a {split} manifest; no synthetic fallback")
+        manifests[split] = {
+            "path": str(path.resolve()),
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+    return {"kind": "real_subset", "manifests": manifests}
+
+
 def environment_record(config: RunConfig):
     def git(*args):
         result = subprocess.run(["git", *args], capture_output=True, text=True, check=False)
         return result.stdout.strip()
 
-    manifests = {}
-    for split, directory in (("train", config.train_data), ("validation", config.validation_data)):
-        path = Path(directory) / "manifest.json"
-        if directory and path.is_file():
-            manifests[split] = {
-                "path": str(path.resolve()),
-                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            }
+    identity = dataset_identity(config)
     return {
         "python": platform.python_version(),
         "platform": platform.platform(),
@@ -236,7 +258,8 @@ def environment_record(config: RunConfig):
         "cpu_count": os.cpu_count(),
         "code_commit": git("rev-parse", "HEAD"),
         "dirty_state": git("status", "--porcelain", "--", "."),
-        "data_manifests": manifests,
+        "data_manifests": identity.get("manifests", {}),
+        "dataset_identity": identity,
         "playbook_commit": "707c64b138d5e6c534af3d197fd4f278aab03d45",
         "official_commit": "fcb0d4a0f5cbbcecf69f9b9796366d6f5f2ce128",
         "initialization": "random; no pretrained weights",
@@ -284,16 +307,20 @@ def train(
         raise ValueError(
             "Output already has a checkpoint; explicitly resume or choose a new output"
         )
-    generator = torch.Generator().manual_seed(config.seed)
-    train_loader, valid_loader = make_loaders(config, generator)
-    raw, model, optimizer, scheduler, scaler = build(config)
     checkpoint = load_checkpoint(resume) if resume else None
-    start_epoch, global_step, prior_active, original_started = 0, 0, 0.0, time.time()
+    identity = dataset_identity(config)
     if checkpoint:
         if config_fingerprint(config) != config_fingerprint(
             RunConfig.from_dict(checkpoint["config"])
         ):
             raise ValueError("Resume configuration changes the experiment recipe")
+        if identity != checkpoint["dataset_identity"]:
+            raise ValueError("Resume dataset manifest identity changed")
+    generator = torch.Generator().manual_seed(config.seed)
+    train_loader, valid_loader = make_loaders(config, generator)
+    raw, model, optimizer, scheduler, scaler = build(config)
+    start_epoch, global_step, prior_active, original_started = 0, 0, 0.0, time.time()
+    if checkpoint:
         raw.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
         scheduler.load_state_dict(checkpoint["scheduler"])
@@ -310,12 +337,18 @@ def train(
         config.to_dict(),
         checkpoint.get("run_id") if checkpoint else None,
     )
-    (directory / "config.json").write_text(json.dumps(config.to_dict(), indent=2) + "\n")
-    (directory / "environment.json").write_text(
-        json.dumps(environment_record(config), indent=2) + "\n"
-    )
-    tracker.artifact(directory / "config.json")
-    tracker.artifact(directory / "environment.json")
+    sessions = directory / "sessions"
+    sessions.mkdir(exist_ok=True)
+    session = Path(tempfile.mkdtemp(prefix="session-", dir=sessions))
+    for name, record in (("config", config.to_dict()), ("environment", environment_record(config))):
+        text = json.dumps(record, indent=2) + "\n"
+        snapshot_path = session / f"{name}.json"
+        snapshot_path.write_text(text)
+        tracker.artifact(snapshot_path, artifact_path=f"sessions/{session.name}")
+        original = directory / f"{name}.json"
+        if not original.exists():
+            original.write_text(text)
+            tracker.artifact(original)
     session_start = time.perf_counter()
     completed = start_epoch
     try:
@@ -350,8 +383,9 @@ def train(
             completed = epoch + 1
             active = prior_active + time.perf_counter() - session_start
             payload = {
-                "schema_version": 1,
+                "schema_version": 2,
                 "config": config.to_dict(),
+                "dataset_identity": identity,
                 "model": raw.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "scheduler": scheduler.state_dict(),

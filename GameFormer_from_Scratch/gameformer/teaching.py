@@ -4,7 +4,6 @@ import ast
 import base64
 import hashlib
 import html
-import io
 import json
 import subprocess
 import sys
@@ -552,8 +551,15 @@ def source_code(module, names):
 
 
 def draw_figure(spec, destination):
-    import cairosvg
-    from PIL import Image
+    import matplotlib
+    from PIL import Image, ImageDraw, ImageFont
+
+    # Use wheel-bundled fonts and rasterizer, not host Cairo/fontconfig versions.
+    # SVG and PNG use the same layout primitives; SVG text stays editable.
+    scale = 2
+    picture = Image.new("RGB", (1100 * scale, 620 * scale), "#f5f7fb")
+    canvas = ImageDraw.Draw(picture)
+    font_root = Path(matplotlib.get_data_path()) / "fonts/ttf"
 
     identifier, title, subtitle, *rest = spec
     panels, source = rest[:3], rest[3]
@@ -567,6 +573,11 @@ def draw_figure(spec, destination):
         parts.append(
             f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" fill="{color}">{html.escape(content)}</text>'
         )
+        font = ImageFont.truetype(
+            str(font_root / ("DejaVuSans-Bold.ttf" if weight == "bold" else "DejaVuSans.ttf")),
+            size * scale,
+        )
+        canvas.text((x * scale, y * scale), content, font=font, fill=color, anchor="ls")
 
     label(32, 43, title, 25, "bold")
     for i, line in enumerate(textwrap.wrap(subtitle, 124)):
@@ -577,6 +588,13 @@ def draw_figure(spec, destination):
         background, accent = colors[i]
         parts.append(
             f'<rect x="{x}" y="128" width="336" height="362" rx="12" fill="{background}" stroke="{accent}" stroke-width="1.5"/>'
+        )
+        canvas.rounded_rectangle(
+            (x * scale, 128 * scale, (x + 336) * scale, 490 * scale),
+            radius=12 * scale,
+            fill=background,
+            outline=accent,
+            width=3,
         )
         label(x + 17, 164, panel[0], 17, "bold", accent)
         y = 207
@@ -589,6 +607,8 @@ def draw_figure(spec, destination):
         parts.append(
             f'<path d="M{x} 310 H{x + 17} M{x + 10} 304 L{x + 18} 310 L{x + 10} 316" stroke="#536783" stroke-width="2.5" fill="none"/>'
         )
+        for points in (((x, 310), (x + 17, 310)), ((x + 10, 304), (x + 18, 310), (x + 10, 316))):
+            canvas.line([(px * scale, py * scale) for px, py in points], fill="#536783", width=5)
     label(33, 528, "Blue: inputs   |   Amber: operation   |   Green: result / interpretation", 14)
     label(
         33,
@@ -607,11 +627,9 @@ def draw_figure(spec, destination):
     parts.append("</g></svg>")
     svg = "\n".join(parts) + "\n"
     (destination / (identifier + ".svg")).write_text(svg)
-    png = cairosvg.svg2png(bytestring=svg.encode())
-    with Image.open(io.BytesIO(png)) as picture:
-        picture.convert("RGB").quantize(colors=128).save(
-            destination / (identifier + ".png"), optimize=True
-        )
+    picture.resize((1100, 620), Image.Resampling.LANCZOS).quantize(colors=64).save(
+        destination / (identifier + ".png"), optimize=True
+    )
 
 
 def generate_assets(destination):
@@ -633,13 +651,17 @@ def generate_assets(destination):
                 "png_sha256": digest(destination / (identifier + ".png")),
                 "svg_sha256": digest(destination / (identifier + ".svg")),
                 "source_sha256": {path: digest(ROOT / path) for path in sources},
-                "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG",
+                "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG",
             }
         )
     manifest = {
         "figure_count": len(FIGURES),
         "figures": inventory,
-        "versions": {name: version(name) for name in ("cairosvg", "pillow")},
+        "versions": {name: version(name) for name in ("matplotlib", "pillow")},
+        "font_sha256": {
+            name: digest(Path(__import__("matplotlib").get_data_path()) / "fonts/ttf" / name)
+            for name in ("DejaVuSans.ttf", "DejaVuSans-Bold.ttf")
+        },
         "font": "DejaVu Sans",
         "width": 1100,
         "height": 620,
@@ -979,7 +1001,11 @@ def build_notebook():
         "imports are deliberately opt-in; the architecture above needs no package "
         "import. Read the data guide for practical-preprocessing differences. "
         "Explicit real mode fails if assets are missing. A full training run "
-        "requires a dataset, hardware preflight and an authorized budget.",
+        "requires a dataset, hardware preflight and an authorized budget. "
+        "Schema-2 checkpoints keep the sampler independent of worker startup "
+        "and reject changed cache manifests before restoring state. Original "
+        "config/environment records remain intact; `sessions/` stores every restart. "
+        "Exact recovery covers deterministic datasets without random worker augmentation.",
     )
     code(
         "real-opt-in",

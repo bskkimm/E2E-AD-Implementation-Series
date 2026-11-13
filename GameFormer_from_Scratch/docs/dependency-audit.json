@@ -71,16 +71,6 @@
       "vulns": []
     },
     {
-      "name": "cairocffi",
-      "version": "1.7.1",
-      "vulns": []
-    },
-    {
-      "name": "cairosvg",
-      "version": "2.9.1",
-      "vulns": []
-    },
-    {
       "name": "certifi",
       "version": "2026.10.23",
       "vulns": []
@@ -128,11 +118,6 @@
     {
       "name": "cryptography",
       "version": "50.0.2",
-      "vulns": []
-    },
-    {
-      "name": "cssselect2",
-      "version": "0.10.1",
       "vulns": []
     },
     {
@@ -766,11 +751,6 @@
       "vulns": []
     },
     {
-      "name": "tinycss2",
-      "version": "1.5.1",
-      "vulns": []
-    },
-    {
       "name": "tomli",
       "version": "2.5.0",
       "vulns": []
@@ -831,11 +811,6 @@
       "vulns": []
     },
     {
-      "name": "webencodings",
-      "version": "0.6.1",
-      "vulns": []
-    },
-    {
       "name": "werkzeug",
       "version": "3.1.9",
       "vulns": []
@@ -853,8 +828,8 @@
   ],
   "fixes": [],
   "audit_provenance": {
-    "recorded_at_utc": "2026-11-13T09:48:35.194491+00:00",
-    "uv_lock_sha256": "58f22f2932baa5af5f1effb33583861e0bb6873916c6a0bac554a011d77ddb2e",
+    "recorded_at_utc": "2026-11-13T10:05:55.732194+00:00",
+    "uv_lock_sha256": "57af77b444e527f4511d5defcb1179abcafb8e1e5af152bdad05a31f164c8293",
     "query_protocol": "All extras exported from frozen uv.lock; torch +cpu suffix queried as its public release; no packages skipped or CVEs ignored",
     "python": "3.11.14",
     "lock_selection": "PEP 508 markers evaluated by pip-audit on this platform/interpreter"

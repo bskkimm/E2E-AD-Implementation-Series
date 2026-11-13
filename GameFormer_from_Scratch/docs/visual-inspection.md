@@ -1,7 +1,9 @@
 # Individual figure inspection
 
 On 2026-11-13 the authoring Codex agent opened **each of the 18 final PNGs**
-individually at its 1100×620 resolution after 128-color compression. No contact
+individually at its 1100×620 resolution after 64-color compression. This inspection
+was repeated for every PNG after replacing Cairo with Pillow and wheel-bundled
+fonts; the notebook is 972,542 bytes. No contact
 sheet was used as a substitute. Checked text/contrast, clipping, panel arrow
 endpoints, full-versus-toy dimensions, arithmetic, masks and gradient barriers
 against the local source. Labels and equations are legible; no overlap or clipped

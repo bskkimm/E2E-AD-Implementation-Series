@@ -13,7 +13,7 @@ import torch
 from gameformer.config import ModelConfig, recipe
 from gameformer.data import validate_sample
 from gameformer.engine import make_loaders
-from gameformer.performance import benchmark, tune
+from gameformer.performance import benchmark, correctness_probe, tune
 from gameformer.prepare import scenario_sample
 
 
@@ -44,6 +44,26 @@ def test_dependency_audit_rejects_unqueried_packages():
         validate_report({"dependencies": [{"name": "torch", "skip_reason": "unknown release"}]})
     with pytest.raises(RuntimeError, match="vulnerabilities"):
         validate_report({"dependencies": [{"name": "example", "vulns": [{"id": "CVE-example"}]}]})
+
+
+def test_tuner_correctness_probe_respects_microbatch_memory_bound(monkeypatch):
+    import gameformer.performance as performance
+
+    actual_build = performance.build
+    seen = []
+
+    def observed_build(config):
+        objects = actual_build(config)
+        objects[1].register_forward_pre_hook(
+            lambda _, args: seen.append(args[0]["ego_state"].shape[0])
+        )
+        return objects
+
+    monkeypatch.setattr(performance, "build", observed_build)
+    config = replace(recipe("smoke"), synthetic=True, microbatch=1, accumulation=8)
+    values = correctness_probe(config)
+    assert seen and max(seen) == 1, seen
+    assert values["output"].shape[1] == 8
 
 
 def test_waymo_boundary_preserves_true_zero_coordinates():
@@ -102,7 +122,7 @@ def test_practical_map_rotates_geometry_and_preserves_signal_semantics():
         return [NS(x=x, y=float(y)) for y in (5, 6, 7)]
 
     def boundary(identifier):
-        return NS(boundary_feature_id=identifier, boundary_type=2)
+        return NS(boundary_feature_id=identifier, boundary_type=0)
 
     lane = NS(
         polyline=points(10),
@@ -151,6 +171,54 @@ def test_practical_map_rotates_geometry_and_preserves_signal_semantics():
     torch.testing.assert_close(vectors[:, 9], torch.full((config.lane_points,), 10.0))
     assert (vectors[:, 13] == 3).all() and (vectors[:, 14:17] == 1).all()
     assert sample["lane_valid"][0, 0].all() and sample["crosswalk_valid"].all()
+
+
+@pytest.mark.parametrize("heading", [0.0, 0.7])
+def test_missing_lane_boundaries_remain_zero_after_world_translation(heading):
+    config = ModelConfig.smoke()
+
+    def scene_at(dx, dy):
+        tracks = [
+            NS(
+                id=actor + 1,
+                object_type=1,
+                states=[
+                    NS(
+                        center_x=dx + actor + (step - 10),
+                        center_y=dy,
+                        heading=heading,
+                        velocity_x=10.0,
+                        velocity_y=0.0,
+                        length=4.0,
+                        width=2.0,
+                        height=1.5,
+                        valid=True,
+                    )
+                    for step in range(91)
+                ],
+            )
+            for actor in range(2)
+        ]
+        lane = NS(
+            polyline=[NS(x=dx + x, y=dy) for x in range(4)],
+            speed_limit_mph=20.0,
+            type=1,
+            interpolating=False,
+            exit_lanes=[],
+            left_boundaries=[],
+            right_boundaries=[],
+        )
+        return NS(
+            tracks=tracks,
+            current_time_index=10,
+            dynamic_map_states=[],
+            map_features=[NS(id=1, lane=lane, WhichOneof=lambda _: "lane")],
+        )
+
+    original = scenario_sample(scene_at(0.0, 0.0), (0, 1), config)
+    shifted = scenario_sample(scene_at(1000.0, 2000.0), (0, 1), config)
+    torch.testing.assert_close(original["map_lanes"], shifted["map_lanes"])
+    assert shifted["map_lanes"][..., 3:9].count_nonzero() == 0
 
 
 def test_benchmark_reports_actual_training_scope_and_tuner_keeps_recipe():

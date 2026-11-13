@@ -7,13 +7,13 @@
       "caption": "One common scene; multiple possible futures; one shared mode index.",
       "alt": "From a scene to interacting futures",
       "mime_type": "image/png",
-      "png_sha256": "0e5bda2f0cf56bfad214f702b64f53c2b5058b5d3277815f750b4e0452e15ad9",
+      "png_sha256": "78c61b0949a664e23dcd765b069c0a7a89cbd1628f3d0435fc729334cd5a92c2",
       "svg_sha256": "8edc67729674a6f5b6d7c6cac34321732ef37d7568d0dc05e3fbe947c565fa57",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "scene-tensors",
@@ -21,14 +21,14 @@
       "caption": "Full histories: [B,34,11,9]; targets: [B,2,80,2]. Positions are meters.",
       "alt": "Coordinates, validity and targets",
       "mime_type": "image/png",
-      "png_sha256": "f6667618ad5916ca65aaae1ea07e0a0995981c2235b09f2742285a438391ca0f",
+      "png_sha256": "7f0c7def4348d6e7771b20e55656b89cabcb3ff30ab0243400c79a4951291fe1",
       "svg_sha256": "f84023d5617e142c9bb1a1492b0ef73e968ff33ba521508a6ad6aa4194781165",
       "source_sha256": {
         "gameformer/geometry.py": "63a14d73e295d6a7305202454911cf5cc0f1361798d1e35f0949d1c2b3cf2c78",
         "gameformer/data.py": "b06b4f82c75ea40782a3062d087f5038ed71a53e50db04c11d60f616236119b3",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "agent-history",
@@ -36,13 +36,13 @@
       "caption": "Full: eight numeric inputs -> two LSTM layers -> D256, plus a type embedding.",
       "alt": "History becomes an actor token",
       "mime_type": "image/png",
-      "png_sha256": "4ce1ae2af077a2c20e59da498660c5a6b1e2e0b017ea0fd14b45606846068619",
+      "png_sha256": "03dcd65287399b12fbb707c337e96b95c9d3a9f3d03dd40b355cc128b0cf1e93",
       "svg_sha256": "d242ff7494c81460ddb3770e3cc79e3abf44f426aa78f41ea891b32679ea7a60",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "lane-encoding",
@@ -50,13 +50,13 @@
       "caption": "Full lanes: [B,P,6,100,17] -> point embeddings [B,P,6,100,256].",
       "alt": "Lane geometry and discrete semantics",
       "mime_type": "image/png",
-      "png_sha256": "44dc300db9dbbbcbebbb1364b62ef97eaafb5a70ebdad96181376d8e4e1dcc6d",
+      "png_sha256": "a1ff3fff1f9072c4903cea3b4af48b92956221319f22ea8f8eda658690902f67",
       "svg_sha256": "b079b5260f47946d67240e81e6798bbd01020ac6b0c21084192f80d1becfcc1c",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "crosswalk-encoding",
@@ -64,13 +64,13 @@
       "caption": "Full: [B,P,4,50,3] -> [B,P,4,50,256]. No lane positional embedding.",
       "alt": "A point MLP for crosswalks",
       "mime_type": "image/png",
-      "png_sha256": "0131ca373869edf0bf26925e78258b52988a7e9cff9719d77eb5bf63750bc786",
+      "png_sha256": "9ee89bc70c43881e104d9530fb286d535524419d5d692415575851076789f6f3",
       "svg_sha256": "cd2d4b4dfe8ae0458618c83ab65528790c79e0713879e17e693efdeedfa51756",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "map-segments",
@@ -78,13 +78,13 @@
       "caption": "Full: lane groups of 10; crosswalk groups of 10 in the released recipe.",
       "alt": "Masked channel-wise max pooling",
       "mime_type": "image/png",
-      "png_sha256": "ef57d5047e6041f3ec8c1678ed908ea3972804731d800c9ea970390f1b39ff45",
+      "png_sha256": "0afb9eba7449b138ee038c58202a0bd3b984aae750ff7f59ee3730a112d6bd58",
       "svg_sha256": "dd4be74e0a713d76c1e1fbc0fc57f9411b55b3083a15b1d4cc53605e0e739e9d",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "scene-attention",
@@ -92,13 +92,13 @@
       "caption": "Scene length = actors + pooled local map; full released context has 114 tokens.",
       "alt": "Attention reads only visible keys",
       "mime_type": "image/png",
-      "png_sha256": "c5c5e5fa55d4fd809b61993b2d54739735e16fac4d59ea158eb2532d7018259f",
+      "png_sha256": "1491aceb04beff3f588c9c3070291c2ec69426d57f23f792c6673612f9a07dda",
       "svg_sha256": "8752fab277d87959866830ae1e24cd8fd272ca4172638b33770a0c0a4bd004d6",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "initial-query",
@@ -106,13 +106,13 @@
       "caption": "Full level-0 query: [B,P=2,M=6,D=256]. Toy vectors use D=2.",
       "alt": "Modes and agents create distinct queries",
       "mime_type": "image/png",
-      "png_sha256": "e894441f2e64a1d6cd3c3dce8b230573e2f8f2449668a839b2c22d394eeb78e1",
+      "png_sha256": "e30a918365bc33434efdd4c4cdecddd997cef65a2823f59d7bc9c796dc5490e9",
       "svg_sha256": "252529fa1f0608b3a4cfe2d64d6f232e7fd5a1cfdfbd452efe4db73e9c34fbb5",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "gaussian-head",
@@ -120,13 +120,13 @@
       "caption": "Each stage: [B,P,M,T,4] = mu_x,mu_y,log_sigma_x,log_sigma_y.",
       "alt": "Offsets, uncertainty and mode scores",
       "mime_type": "image/png",
-      "png_sha256": "91a65cddca938d54ef90995417fa45804c965d5e82a49ce7c4c72d45b32d160c",
+      "png_sha256": "075b25278b8f4cde9ceacefc36fa6b2534703b57a9a426453ebcf5a1b35e97de",
       "svg_sha256": "9c87596ad49c741f2f7daac04019b0d5f82050ec46f2d10ba301ff47489bc76e",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "future-encoding",
@@ -134,13 +134,13 @@
       "caption": "Full input [B,P,M,80,2]; shared future MLP outputs [B,P,M,256].",
       "alt": "Previous xy becomes a detached future feature",
       "mime_type": "image/png",
-      "png_sha256": "7b46f34ee21b6a6b5093ed66b90c26f9b4d0187f1be333974f4692c0681d0c01",
+      "png_sha256": "5db15356e100987d13b2885763b6684eddf6aeb6f6ed1df4f4adf4976441fcea",
       "svg_sha256": "263e76c29b650259cdde4387111dbdb0bd48610f99ff438fab7c62f6162ebcd9",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "future-interaction",
@@ -148,13 +148,13 @@
       "caption": "Full multi-future [B,P,M,256] -> [B,P,256] -> future self-attention.",
       "alt": "Pool modes, then mix future agents",
       "mime_type": "image/png",
-      "png_sha256": "492b121eabd57fedcc0bc945661ad213b82777cdba39d6bb876cfa823af2b577",
+      "png_sha256": "9dcc91e850da1931f3e17a0df02a596252b4ad3e77e600b0d1b44146789a6465",
       "svg_sha256": "bd9b16e8cc17b4482117cd2cd47485f867c30079a3366fdd253b810defd663b1",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "reasoning-mask",
@@ -162,13 +162,13 @@
       "caption": "Level-k query = previous content + own multi-future embedding.",
       "alt": "Mask the own-future context token",
       "mime_type": "image/png",
-      "png_sha256": "266db566e7e1c37403a8b283a64c2121834aed88ef9d4c38e62ebce799a54fed",
+      "png_sha256": "865b631f554e74cc229f4612e8e41902fb9960dbe94a4d6c8dfbe2f4afd60d3d",
       "svg_sha256": "d21f596c2a855a3762ecd156e5fc0d91f028385e915d47ce553272738f5d25c3",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "full-assembly",
@@ -176,13 +176,13 @@
       "caption": "Full release: E6 scene layers; K3 interactions plus initial level 0.",
       "alt": "One encoder, a hierarchy of decoders",
       "mime_type": "image/png",
-      "png_sha256": "0712ff9cca6691a264340a037eba8afb81ecf5db94eae17310d1dbc6e584857d",
+      "png_sha256": "fbccb5aa86b25233f135f1885cee0748a40810f78482351075828868722b7e22",
       "svg_sha256": "4cb087e20714acf20535694ee2798f8e5ca50275d96740469ecc57244550a847",
       "source_sha256": {
         "gameformer/model.py": "454601b18d2f160828e4d02ae52d60cb2b5e9682171e631a4f437b30717a8541",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "joint-objective",
@@ -190,13 +190,13 @@
       "caption": "Illustrative two-mode example; actual model uses six shared modes.",
       "alt": "One winning mode for the joint scene",
       "mime_type": "image/png",
-      "png_sha256": "813fd0c56341443d0289934abef5df5b97df526f06524f702e11f27e67b58261",
+      "png_sha256": "d5692e498374c320e0a208d3be8237138335be520ab875108451435d9a87aef4",
       "svg_sha256": "845f862538f32eab1f38bb671aec9e5d62f90e09f68a8d96f5edb03b065b3497",
       "source_sha256": {
         "gameformer/losses.py": "1b9dbfe508d2d35c38601cfef68fa6eb0c07b37b42c41271aa34e8bfcc1d4e72",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "optimizer-update",
@@ -204,13 +204,13 @@
       "caption": "Autocast forward is optional; Gaussian loss arithmetic stays in FP32.",
       "alt": "A real backward pass and AdamW update",
       "mime_type": "image/png",
-      "png_sha256": "1ce0031348d5d88a057bec104ddb1a1e14b8177af9589074d1c5418cbc3e08e8",
+      "png_sha256": "bfe21ee052224d3ee8b0f80e1f1a1f7cb5e09e8b448382cbee0d280982bddf0d",
       "svg_sha256": "6ccf9f43a47d4037146c59b31be32b1e1019b024316bebfd0aacbdf163b40c7d",
       "source_sha256": {
-        "gameformer/engine.py": "a4def4ad564c990c64b0429f430bb7cabe03675535d33fb5c8662901c6fe0fb0",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/engine.py": "ed3751b6388db903648822346ce6b5d0af8397b9fd9e40f42889be81edfc679d",
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "decoding-metrics",
@@ -218,13 +218,13 @@
       "caption": "Selection never reads the target; diagnostics and official metrics differ.",
       "alt": "Inference scores select a shared future",
       "mime_type": "image/png",
-      "png_sha256": "387e58879fd38b7dc02c6bbfe5cee696dc444f3efecaae80bd53994120ee8804",
+      "png_sha256": "b9db4d8bfa645da5283ad1e5158b67bc7b13524387ddbc55db1ac3e6890e093e",
       "svg_sha256": "2430e708425bfdbdb7193be6c06245b8fcf9151fee638038bc7406b6a4aaec2c",
       "source_sha256": {
         "gameformer/evaluation.py": "2a47e44bc9b1cc2bfa8e7a6efba0a65d1f09cecd9b360aba2419bb0423affa74",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "checkpoint-resume",
@@ -232,13 +232,13 @@
       "caption": "Infrastructure workflow: an atomic rename publishes a coherent checkpoint.",
       "alt": "Recover at a complete epoch boundary",
       "mime_type": "image/png",
-      "png_sha256": "ce1b3838a3ce28597be25b9d87920bba185e54919deb733b338077ea435aba17",
+      "png_sha256": "8ebfef18d819f2e1ae3983f49e258156878d0cd62feb16c77bd6b3b240fcb1d5",
       "svg_sha256": "807a6455e53e0ce2e9fa3dbd231131ab9d263d35b69e59f1667b14a1bcf6e365",
       "source_sha256": {
-        "gameformer/engine.py": "a4def4ad564c990c64b0429f430bb7cabe03675535d33fb5c8662901c6fe0fb0",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/engine.py": "ed3751b6388db903648822346ce6b5d0af8397b9fd9e40f42889be81edfc679d",
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     },
     {
       "id": "tracking-eta",
@@ -246,18 +246,22 @@
       "caption": "Infrastructure example; toy timestamps and durations, not measured training.",
       "alt": "Estimate remaining time after a resume",
       "mime_type": "image/png",
-      "png_sha256": "5e26235eedf3ebea95887c8fe66878819d4393f9fced2ceb820e1e6e77714b8d",
+      "png_sha256": "2cb9bf758f684e469244820ce6f98150cda91273ccb2a9bf8adb8519ba5b4db5",
       "svg_sha256": "1cc53cbb5fe8b4b8808f99cd0badde1fc08b633e4c3f67c94b957136f5e5b5ac",
       "source_sha256": {
-        "gameformer/tracking.py": "06622342a4d842a0e6c90684e5d85fd08a11c76067a30ee63282a9ac3717a509",
-        "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
+        "gameformer/tracking.py": "a8064c0ccb0a3d1c20f295339b01b3021e377958fb22f3fd3eeddcb409c4a6a3",
+        "gameformer/teaching.py": "ecfaaf6e2b7654e5c1bfd8997c527ecb874b9da3fe6e87de2c07c0fae31ce916"
       },
-      "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
+      "generation": "shared editable SVG/Pillow primitives; wheel-bundled DejaVu fonts; 2x supersampling; 64-color PNG"
     }
   ],
   "versions": {
-    "cairosvg": "2.9.1",
+    "matplotlib": "3.11.2",
     "pillow": "13.0.0"
+  },
+  "font_sha256": {
+    "DejaVuSans.ttf": "3fdf69cabf06049ea70a00b5919340e2ce1e6d02b0cc3c4b44fb6801bd1e0d22",
+    "DejaVuSans-Bold.ttf": "b184b89e3c1075f22f6b71575b6fc20d4972b3cfd3b23322ca6fd596dcaef167"
   },
   "font": "DejaVu Sans",
   "width": 1100,

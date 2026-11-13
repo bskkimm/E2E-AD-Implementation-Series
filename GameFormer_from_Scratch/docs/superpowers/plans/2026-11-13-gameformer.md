@@ -80,6 +80,8 @@ Consumes all prior interfaces.
 - [x] Add independent lint/type/unit/integration/notebook/package/audit/docs jobs
   plus an always-running gate, SHA-pinned actions and CPU Python matrix.
 - [x] Run full local gate and clean environment package/CLI tests.
-- [ ] Obtain a fresh scientific/engineering code review and fix valid findings.
-- [ ] Commit, push topic branch, open PR and check CI/reviewer freshness when
+- [x] Obtain a fresh scientific/engineering code review and fix valid findings.
+- [x] Commit, push topic branch, open draft PR #1; inspect hosted failure and
+  implement portable-rendering fix. See the review report and execution ledger.
+- [ ] Verify final hosted checks and trusted current-head reviewer/protection when
   authorized access allows; report any unmet external gate exactly.

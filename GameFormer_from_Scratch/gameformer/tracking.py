@@ -105,9 +105,9 @@ class Tracker:
             if snapshot["remaining_seconds"] is not None:
                 self.log({"progress/remaining_seconds": snapshot["remaining_seconds"]}, step)
 
-    def artifact(self, path: Path) -> None:
+    def artifact(self, path: Path, artifact_path: str | None = None) -> None:
         if self.client:
-            self.client.log_artifact(self.run_id, str(path))
+            self.client.log_artifact(self.run_id, str(path), artifact_path=artifact_path)
 
     def finish(self, status: str = "FINISHED") -> None:
         if self.client:

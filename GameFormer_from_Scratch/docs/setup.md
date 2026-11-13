@@ -23,8 +23,10 @@ The base dependencies are PyTorch, NumPy and Matplotlib. Standard PyTorch layers
 implement the learnable model; NumPy handles NPZ caches; Matplotlib renders
 diagnostic trajectories. Optional MLflow provides tracking, not a training loop.
 Development dependencies provide tests, lint/types, notebooks, deterministic
-SVG rendering, packaging and vulnerability auditing. CairoSVG also needs system
-Cairo and DejaVu Sans; the inspected host and Ubuntu CI runner supply them.
+figure rendering, packaging and vulnerability auditing. SVG and PNG share layout
+primitives; Pillow rasterizes the PNG with Matplotlib's wheel-bundled DejaVu fonts.
+The manifest records renderer versions and font hashes. Host Cairo and Fontconfig
+are not part of figure generation.
 The pinned setuptools backend supports building without a separate wheel package.
 
 The lock explicitly selects the PyTorch CPU wheel index. CUDA and TorchVision

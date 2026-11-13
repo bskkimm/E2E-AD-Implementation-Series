@@ -37,9 +37,15 @@ OMP_NUM_THREADS=1 .venv/bin/gameformer train --config configs/smoke.json \
 Recovery is at a **completed epoch boundary**. A crash during an epoch replays it.
 A fully finished run has no remaining epochs. Checkpoints save model, AdamW,
 scheduler, scaler, RNG/shuffle state, run ID and timing. Recipe changes are rejected;
-device and loader settings can change. Tracking retains the initial immutable
-configuration and displays the current runtime configuration separately. Only load
-trusted project checkpoints: recovery includes Python/NumPy state.
+device and loader settings can change. Schema-2 checkpoints also compare both cache
+manifest hashes before restoring state or writing session artifacts. Schema-1
+checkpoints cannot provide this recovery guarantee and are rejected. The sampler's
+generator is independent of worker startup; exact recovery covers deterministic
+datasets, including persistent workers, without random worker augmentation.
+Original `config.json` and `environment.json` remain intact. Every start adds unique
+`sessions/<session>/config.json` and `environment.json` snapshots locally and in MLflow.
+Tracking displays the current runtime configuration separately. Only load trusted
+project checkpoints: recovery includes Python/NumPy state.
 
 Edit a copy of the JSON to change a run's settings. MLflow remains optional, records
 progress and finish time in `Asia/Tokyo` by default, and includes observed validation
@@ -100,7 +106,9 @@ checkpointing and MLflow are outside those training-path benchmark scopes.
 Worker loading has a configurable `loader_timeout` in seconds (default 30);
 tuning caps a worker trial's timeout at its remaining budget.
 The tuner keeps data/model/effective batch/objective/schedule fixed, compares against
-FP32, and saves every attempted candidate. Its deadline is checked between candidates
+FP32, and saves every attempted candidate. Its output/gradient probe forwards one
+microbatch at a time and combines only detached comparison outputs on CPU. Its
+deadline is checked between candidates
 and timed steps; initialization, correctness probes and an atomic update may overrun.
 See [measurement limits](docs/benchmark.md).
 

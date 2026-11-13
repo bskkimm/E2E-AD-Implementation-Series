@@ -62,3 +62,38 @@ Plan: `docs/superpowers/plans/2026-11-13-gameformer.md`.
 - Tasks 1–3 complete. Source measurements are pinned to c80cd7e plus aggregate
   source/config hashes. Task 4 local implementation/checks complete; fresh review,
   signed delivery commit, PR, hosted checks and external-review evidence pending.
+- Final review: fresh `/root/whole_branch_review` (gpt-6-astra xhigh), base
+  f3d5512 through fd62eff. Five Important findings accepted; no Critical/Minor.
+  [Findings and dispositions](whole-branch-review.md) record the concrete triggers.
+- Final: fixed persistent-worker recovery —
+  `test_epoch_boundary_resume_matches_uninterrupted` RED→GREEN, suite 32/32.
+- Final: fixed changed-cache resume and retained provenance —
+  `test_resume_rejects_changed_cache_manifest_before_overwriting_provenance`
+  RED→GREEN for both splits, suite 32/32; local/MLflow sessions verified.
+- Final: fixed absent lane boundary normalization —
+  `test_missing_lane_boundaries_remain_zero_after_world_translation` RED→GREEN,
+  suite 32/32; translated/rotated absence and type-0 presence covered.
+- Final: fixed tuner probe memory —
+  `test_tuner_correctness_probe_respects_microbatch_memory_bound` RED→GREEN,
+  suite 32/32; actual forwards remain microbatch-sized.
+- Final: fixed host-dependent figure rendering —
+  `test_figure_rendering_does_not_depend_on_host_fontconfig` RED→GREEN,
+  suite 32/32. All 18 Pillow/64-color PNGs individually reinspected.
+- Final: Ruling: keep real SDK/data/GPU/paper scores as unmet gates — unavailable
+  assets/budget; synthetic evidence is bounded — real behavior/accuracy may differ.
+- Final: Ruling: retain bounded in-memory metric adapter — full-dataset streaming
+  is outside current scope — unbounded evaluation can exhaust host RAM.
+- Final: Ruling: restrict accumulation equivalence to uniform validity/zero
+  dropout — sample-weighted microbatch objectives are the defined behavior —
+  changing batch partition may change mixed-mask/dropout gradients.
+- Final: Ruling: exclude nuPlan, marginal EM and submissions — selected WOMD
+  scope — those workflows and their performance claims remain unavailable.
+- Final: Ruling: keep trusted pra/protection gates separate — auth/admin access
+  is missing — review/enforcement remain unestablished and the PR stays draft.
+- Final: Ruling: reject checkpoint schema 1 — sampler semantics changed and data
+  hashes were absent — pre-fix diagnostic runs need a fresh output/run.
+- Draft PR #1 opened and signed branch published. First hosted run 43404779502
+  passed ten matrix jobs; host Cairo/font regeneration failed notebook/aggregate.
+  The portable renderer fix requires a successful final hosted rerun.
+- Deferred minors: none. No re-review agent; fix regressions/full suite are the
+  plan's verification contract, distinct from the unmet trusted-review gate.

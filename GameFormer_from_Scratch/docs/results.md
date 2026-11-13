@@ -19,7 +19,10 @@ Tested evidence:
   summed-score mode. A real 40-update fixed-batch overfit substantially lowers
   the actual objective: [learning record](evidence/tiny-learning.json).
 - Exact epoch-boundary interrupted/uninterrupted weights, scheduler and update
-  counts, including a final partial accumulation group. Uniform-validity,
+  counts, including persistent workers and a final partial accumulation group.
+  Changed train or validation manifests are rejected before state restoration;
+  initial provenance and per-session local/MLflow snapshots are preserved.
+  Recovery covers deterministic datasets without random worker augmentation. Uniform-validity,
   zero-dropout accumulation gradients match concatenation. For mixed validity,
   the loss is a ratio over valid labels; changing batch composition need not be
   equivalent. Dropout also prevents a universal equality claim.

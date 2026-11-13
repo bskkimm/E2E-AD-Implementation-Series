@@ -40,6 +40,11 @@ pairs. Validation uses the two objects of interest; training uses each eligible
 target's nearest other targets. Lane paths, boundaries and crosswalk selection
 are a **practical adaptation**, named `practical_vector_map_v1`; they do not prove
 released preprocessing parity. History gaps remain masked rather than imputed.
+Missing lane boundaries retain zero geometry after translation and rotation:
+internal presence flags follow path concatenation and resampling. Presence is
+independent of zero coordinates and boundary type 0. Cache schema 1 is unchanged;
+training checkpoint schema 2 additionally saves both manifest hashes and rejects
+changed caches before resuming.
 See [the deviation table](paper-to-code.md). Preparation rejects nonempty output
 directories and currently supports the joint task only.
 

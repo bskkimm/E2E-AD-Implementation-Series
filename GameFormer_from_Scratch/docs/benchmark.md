@@ -29,6 +29,11 @@ updates before timing. It considers worker persistence/prefetch, supported BF16,
 microbatch/accumulation tradeoffs at fixed effective batch, CUDA pinning/fused
 optimization when available, and compilation. Candidate count and actual tested
 candidates are recorded; a short run does not test the full search space.
+The correctness probe forwards and backpropagates each microbatch separately,
+weights losses by actual sample counts, and joins only detached outputs on CPU.
+Its device forward batch never grows to the accumulated effective batch. As with
+training, mixed label validity or dropout can make different batch partitions
+numerically different; such a candidate must still pass the comparison.
 
 Every timed candidate has two measurements. To replace the incumbent, its slower
 repeat must beat the incumbent's faster repeat by more than 3%, with at least 10%

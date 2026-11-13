@@ -116,19 +116,27 @@ def correctness_probe(config: RunConfig):
     _, model, optimizer, _, scaler = build(config)
     loader, _ = make_loaders(config, torch.Generator().manual_seed(config.seed))
     group = next(grouped_batches(loader, config.accumulation))
-    batch = move({key: torch.cat([item[key] for item in group]) for key in group[0]}, config.device)
     model.eval()
-    with precision_context(config):
-        outputs = model(batch)
-        loss = objective(outputs, batch, config.task)["loss"]
-    loss.backward()
+    size = sum(batch["ego_state"].shape[0] for batch in group)
+    trajectories, scores = [], []
+    loss = torch.zeros(())
+    for item in group:
+        batch = move(item, config.device)
+        weight = batch["ego_state"].shape[0] / size
+        with precision_context(config):
+            outputs = model(batch)
+            weighted_loss = objective(outputs, batch, config.task)["loss"] * weight
+        weighted_loss.backward()
+        trajectories.append(outputs["trajectories"].detach().float().cpu())
+        scores.append(outputs["scores"].detach().float().cpu())
+        loss += weighted_loss.detach().float().cpu()
     gradient = torch.cat(
         [p.grad.detach().float().flatten().cpu() for p in model.parameters() if p.grad is not None]
     )
     result = {
-        "output": outputs["trajectories"].detach().float().cpu(),
-        "scores": outputs["scores"].detach().float().cpu(),
-        "loss": loss.detach().float().cpu(),
+        "output": torch.cat(trajectories, dim=1),
+        "scores": torch.cat(scores, dim=1),
+        "loss": loss,
         "gradient": gradient,
     }
     # Same real optimizer updates as training; compare two-step learning as well.

@@ -52,6 +52,9 @@ def scenario_sample(scene, pair: tuple[int, ...], c: ModelConfig):
         name: torch.zeros(shape, dtype=torch.bool if name.endswith("valid") else torch.float32)
         for name, shape in shapes(c).items()
     }
+    # Presence follows the same path/resampling indices as geometry. A real
+    # boundary may have zero coordinates or type 0, so neither implies absence.
+    boundary_valid = torch.zeros(c.predicted, c.lanes, c.lane_points, 2, dtype=torch.bool)
     center_state = scene.tracks[pair[0]].states[current]
     center = torch.tensor([center_state.center_x, center_state.center_y])
     angle = torch.tensor(center_state.heading)
@@ -141,12 +144,13 @@ def scenario_sample(scene, pair: tuple[int, ...], c: ModelConfig):
             if len(paths) >= c.lanes:
                 break
         for slot, (path, start) in enumerate(paths[: c.lanes]):
-            vectors = []
+            vectors, presence = [], []
             for k, key in enumerate(path):
                 lane, points = lanes[key]
                 if k == 0:
                     points = points[start:]
                 data = np.zeros((len(points), 17), dtype=np.float32)
+                present = np.zeros((len(points), 2), dtype=bool)
                 data[:, :3] = points
                 data[:, 9], data[:, 10] = lane.speed_limit_mph / 2.237, lane.type
                 data[:, 15], data[:, 16] = lane.interpolating, key in stops
@@ -154,9 +158,9 @@ def scenario_sample(scene, pair: tuple[int, ...], c: ModelConfig):
                     data[:, 13] = signals[key].state
                     stop = signals[key].stop_point
                     data[:, 14] = np.linalg.norm(points[:, :2] - [stop.x, stop.y], axis=-1) < 3
-                for boundaries, offset, column in (
-                    (lane.left_boundaries, 3, 11),
-                    (lane.right_boundaries, 6, 12),
+                for side, boundaries, offset, column in (
+                    (0, lane.left_boundaries, 3, 11),
+                    (1, lane.right_boundaries, 6, 12),
                 ):
                     for boundary in boundaries:
                         road = roads.get(boundary.boundary_feature_id)
@@ -167,12 +171,17 @@ def scenario_sample(scene, pair: tuple[int, ...], c: ModelConfig):
                         ).argmin(-1)
                         data[:, offset : offset + 3] = road[nearest]
                         data[:, column] = min(boundary.boundary_type, 10)
+                        present[:, side] = True
                 vectors.append(data)
+                presence.append(present)
             if vectors:
                 sample["map_lanes"][agent, slot] = torch.from_numpy(
                     _resample(np.concatenate(vectors), c.lane_points)
                 )
                 sample["lane_valid"][agent, slot] = True
+                boundary_valid[agent, slot] = torch.from_numpy(
+                    _resample(np.concatenate(presence), c.lane_points)
+                )
         ranked_cw = sorted(
             crosswalks,
             key=lambda points: float(np.linalg.norm(points[:, :2] - origin, axis=-1).min()),
@@ -193,6 +202,10 @@ def scenario_sample(scene, pair: tuple[int, ...], c: ModelConfig):
             )
             sample[key][..., offset + 2] = wrap_angle(sample[key][..., offset + 2] - angle)
         sample[key].masked_fill_(~sample[mask_key][..., None], 0)
+    for side, offset in enumerate((3, 6)):
+        sample["map_lanes"][..., offset : offset + 3].masked_fill_(
+            ~boundary_valid[..., side, None], 0
+        )
     validate_sample(sample, c)
     return sample
 

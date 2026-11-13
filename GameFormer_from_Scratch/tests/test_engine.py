@@ -1,11 +1,15 @@
 """Resume equivalence, measured progress and genuine local tracking side effects."""
 
+import hashlib
+import json
 from dataclasses import replace
 
+import numpy as np
 import pytest
 import torch
 
 from gameformer.config import recipe
+from gameformer.data import synthetic_sample
 from gameformer.engine import build, load_checkpoint, make_loaders, move, train, update
 from gameformer.losses import objective
 from gameformer.tracking import progress_snapshot
@@ -31,9 +35,16 @@ def test_eta_uses_remaining_work_and_new_session_rate():
     assert cold["remaining_seconds"] is None and cold["provisional"]
 
 
-def test_epoch_boundary_resume_matches_uninterrupted(tmp_path):
+@pytest.mark.parametrize("workers", [0, 1])
+def test_epoch_boundary_resume_matches_uninterrupted(tmp_path, workers):
     config = replace(
-        recipe("smoke"), synthetic=True, train_size=5, validation_size=2, accumulation=2
+        recipe("smoke"),
+        synthetic=True,
+        train_size=5,
+        validation_size=2,
+        accumulation=2,
+        workers=workers,
+        persistent_workers=bool(workers),
     )
     full = train(config, tmp_path / "full")
     first = train(config, tmp_path / "resume", stop_after_epoch=1)
@@ -77,6 +88,8 @@ def test_tracking_resume_records_permitted_runtime_changes(tmp_path):
     uri = "sqlite:///" + str(tmp_path / "tracking.db")
     config = replace(recipe("smoke"), synthetic=True, train_size=2, tracking_uri=uri)
     first = train(config, tmp_path / "run", stop_after_epoch=1)
+    initial_config = (tmp_path / "run/config.json").read_bytes()
+    initial_environment = (tmp_path / "run/environment.json").read_bytes()
     resumed = train(
         replace(config, prefetch=3), tmp_path / "run", resume=tmp_path / "run/latest.pt"
     )
@@ -85,10 +98,19 @@ def test_tracking_resume_records_permitted_runtime_changes(tmp_path):
     run = client.get_run(resumed["run_id"])
     assert run.info.status == "FINISHED"
     # The original immutable parameter and the current runtime provenance coexist.
-    import json
-
     assert json.loads(run.data.params["resolved_config"])["prefetch"] == 2
     assert json.loads(run.data.tags["current_resolved_config"])["prefetch"] == 3
+    assert (tmp_path / "run/config.json").read_bytes() == initial_config
+    assert (tmp_path / "run/environment.json").read_bytes() == initial_environment
+    snapshots = list((tmp_path / "run/sessions").glob("*/config.json"))
+    assert sorted(json.loads(path.read_text())["prefetch"] for path in snapshots) == [2, 3]
+    sessions = client.list_artifacts(resumed["run_id"], "sessions")
+    assert len(sessions) == 2
+    for session in sessions:
+        assert {
+            item.path.rsplit("/", 1)[-1]
+            for item in client.list_artifacts(resumed["run_id"], session.path)
+        } == {"config.json", "environment.json"}
 
 
 def test_accumulation_matches_concatenation_for_uniform_validity():
@@ -121,3 +143,42 @@ def test_tiny_batch_learns_with_actual_joint_objective():
     with torch.no_grad():
         after = float(objective(model(inputs), inputs, "joint")["loss"])
     assert after < before * 0.25, (before, after)
+
+
+@pytest.mark.parametrize("changed_split", ["train", "validation"])
+def test_resume_rejects_changed_cache_manifest_before_overwriting_provenance(
+    tmp_path, changed_split
+):
+    config = recipe("smoke")
+    for split in ("train", "validation"):
+        directory = tmp_path / split
+        directory.mkdir()
+        sample = synthetic_sample(config.model, 0)
+        path = directory / "scene.npz"
+        np.savez(path, **{key: value.numpy() for key, value in sample.items()})
+        manifest = {
+            "schema_version": 1,
+            "split": split,
+            "records": [
+                {
+                    "file": "scene.npz",
+                    "source_id": "fixture",
+                    "scenario_id": split,
+                    "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                }
+            ],
+        }
+        (directory / "manifest.json").write_text(json.dumps(manifest))
+    config = replace(
+        config, train_data=str(tmp_path / "train"), validation_data=str(tmp_path / "validation")
+    )
+    output = tmp_path / "run"
+    train(config, output, stop_after_epoch=1)
+    original_environment = (output / "environment.json").read_bytes()
+    manifest_path = tmp_path / changed_split / "manifest.json"
+    changed = json.loads(manifest_path.read_text())
+    changed["records"][0]["scenario_id"] = "another-scenario"
+    manifest_path.write_text(json.dumps(changed))
+    with pytest.raises(ValueError, match="dataset|manifest"):
+        train(config, output, resume=output / "latest.pt")
+    assert (output / "environment.json").read_bytes() == original_environment
