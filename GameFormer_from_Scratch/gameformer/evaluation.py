@@ -4,19 +4,25 @@ import torch
 from torch import Tensor
 
 
-def decode(outputs: dict[str, Tensor]) -> tuple[Tensor, Tensor]:
+def decode(outputs: dict[str, Tensor], task: str = "joint") -> tuple[Tensor, Tensor]:
     trajectories, scores = outputs["trajectories"][-1], outputs["scores"][-1]
-    probabilities = scores.sum(1).softmax(-1)
-    mode = probabilities.argmax(-1)
     b, p, _, t, _ = trajectories.shape
-    selected = trajectories.gather(
-        2, mode[:, None, None, None, None].expand(b, p, 1, t, 4)
-    ).squeeze(2)
+    if task == "joint":
+        probabilities = scores.sum(1).softmax(-1)
+        mode = probabilities.argmax(-1)[:, None].expand(-1, p)
+    elif task == "planning":
+        probabilities = scores.softmax(-1)
+        mode = probabilities.argmax(-1)
+    else:
+        raise ValueError("task must be joint or planning")
+    selected = trajectories.gather(2, mode[:, :, None, None, None].expand(b, p, 1, t, 4)).squeeze(2)
     return selected[..., :2], probabilities
 
 
-def diagnostic_totals(outputs: dict[str, Tensor], batch: dict[str, Tensor]) -> dict[str, float]:
-    prediction, _ = decode(outputs)
+def diagnostic_totals(
+    outputs: dict[str, Tensor], batch: dict[str, Tensor], task: str = "joint"
+) -> dict[str, float]:
+    prediction, _ = decode(outputs, task)
     valid = batch["future_valid"]
     target = torch.where(valid[..., None], batch["future"], 0)
     distance = (prediction.float() - target).norm(dim=-1)

@@ -141,7 +141,7 @@ def evaluate(model, loader, config: RunConfig):
         batch_size = batch["ego_state"].shape[0]
         loss_sum += float(values["loss"]) * batch_size
         count += batch_size
-        for name, value in diagnostic_totals(output, batch).items():
+        for name, value in diagnostic_totals(output, batch, config.task).items():
             totals[name] += value
         last = batch, output
     metrics = {
@@ -244,7 +244,7 @@ def environment_record(config: RunConfig):
     }
 
 
-def trajectory_figure(batch, outputs, path):
+def trajectory_figure(batch, outputs, path, task="joint"):
     import matplotlib
 
     matplotlib.use("Agg")
@@ -252,7 +252,7 @@ def trajectory_figure(batch, outputs, path):
 
     from .evaluation import decode
 
-    selected, _ = decode(outputs)
+    selected, _ = decode(outputs, task)
     figure, axis = plt.subplots(figsize=(6, 4))
     for i in range(min(selected.shape[1], 4)):
         prediction = selected[0, i].detach().float().cpu()
@@ -344,7 +344,7 @@ def train(
             if last is not None:
                 image_path = directory / f"epoch-{epoch + 1:03d}.png"
                 last_batch, last_output = last
-                trajectory_figure(last_batch, last_output, image_path)
+                trajectory_figure(last_batch, last_output, image_path, config.task)
                 tracker.artifact(image_path)
             scheduler.step()
             completed = epoch + 1

@@ -207,7 +207,7 @@
       "png_sha256": "1ce0031348d5d88a057bec104ddb1a1e14b8177af9589074d1c5418cbc3e08e8",
       "svg_sha256": "6ccf9f43a47d4037146c59b31be32b1e1019b024316bebfd0aacbdf163b40c7d",
       "source_sha256": {
-        "gameformer/engine.py": "ab423ed5e2bd4be31a5e2e374a6a1f94cf01b8c166b18416ef84b441286bab64",
+        "gameformer/engine.py": "a4def4ad564c990c64b0429f430bb7cabe03675535d33fb5c8662901c6fe0fb0",
         "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
       },
       "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
@@ -221,7 +221,7 @@
       "png_sha256": "387e58879fd38b7dc02c6bbfe5cee696dc444f3efecaae80bd53994120ee8804",
       "svg_sha256": "2430e708425bfdbdb7193be6c06245b8fcf9151fee638038bc7406b6a4aaec2c",
       "source_sha256": {
-        "gameformer/evaluation.py": "683331a075c8f8acba6977d356f0e6e7dc7fb4ad5b861ba7dbf9834b037bcb20",
+        "gameformer/evaluation.py": "2a47e44bc9b1cc2bfa8e7a6efba0a65d1f09cecd9b360aba2419bb0423affa74",
         "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
       },
       "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"
@@ -235,7 +235,7 @@
       "png_sha256": "ce1b3838a3ce28597be25b9d87920bba185e54919deb733b338077ea435aba17",
       "svg_sha256": "807a6455e53e0ce2e9fa3dbd231131ab9d263d35b69e59f1667b14a1bcf6e365",
       "source_sha256": {
-        "gameformer/engine.py": "ab423ed5e2bd4be31a5e2e374a6a1f94cf01b8c166b18416ef84b441286bab64",
+        "gameformer/engine.py": "a4def4ad564c990c64b0429f430bb7cabe03675535d33fb5c8662901c6fe0fb0",
         "gameformer/teaching.py": "2751a5e8f7033c5f462e5d1d8ea8d2a2ae648d127b0805d12a71e71b0f8a71f6"
       },
       "generation": "editable SVG -> CairoSVG -> Pillow 128-color optimized PNG"

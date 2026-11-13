@@ -50,3 +50,13 @@ def test_decoding_never_uses_ground_truth_and_sdk_axes_match():
     batch["future_valid"].zero_()
     totals = diagnostic_totals(output, batch)
     assert totals["valid_steps"] == totals["valid_agents"] == 0
+
+
+def test_planning_selects_a_mode_for_each_agent():
+    trajectories = torch.zeros(1, 1, 2, 2, 5, 4)
+    trajectories[..., 0, :, 0] = 1
+    trajectories[..., 1, :, 0] = 2
+    scores = torch.tensor([[[[4.0, 0.0], [0.0, 8.0]]]])
+    selected, probabilities = decode({"trajectories": trajectories, "scores": scores}, "planning")
+    assert selected[0, :, 0, 0].tolist() == [1.0, 2.0]
+    assert probabilities.shape == (1, 2, 2)
