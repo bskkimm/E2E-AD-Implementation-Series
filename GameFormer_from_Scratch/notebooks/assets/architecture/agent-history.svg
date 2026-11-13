@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620">
+<rect width="1100" height="620" fill="#f5f7fb"/>
+<g font-family="DejaVu Sans" fill="#172336">
+<text x="32" y="43" font-size="25" font-weight="bold" fill="#172336">History becomes an actor token</text>
+<text x="33" y="74" font-size="14" font-weight="normal" fill="#172336">Full: eight numeric inputs -&gt; two LSTM layers -&gt; D256, plus a type embedding.</text>
+<rect x="32" y="128" width="336" height="362" rx="12" fill="#e7eefb" stroke="#2c518c" stroke-width="1.5"/>
+<text x="49" y="164" font-size="17" font-weight="bold" fill="#2c518c">Toy one-channel memory</text>
+<text x="49" y="207" font-size="15" font-weight="normal" fill="#172336">Previous cell c = 1.0</text>
+<text x="49" y="244" font-size="15" font-weight="normal" fill="#172336">Forget gate f = 0.8</text>
+<text x="49" y="281" font-size="15" font-weight="normal" fill="#172336">Input gate i = 0.5</text>
+<text x="49" y="318" font-size="15" font-weight="normal" fill="#172336">Candidate g = 0.4</text>
+<rect x="397" y="128" width="336" height="362" rx="12" fill="#fff0d8" stroke="#805100" stroke-width="1.5"/>
+<text x="414" y="164" font-size="17" font-weight="bold" fill="#805100">LSTM gate arithmetic</text>
+<text x="414" y="207" font-size="15" font-weight="normal" fill="#172336">c_new = f*c + i*g</text>
+<text x="414" y="244" font-size="15" font-weight="normal" fill="#172336">c_new = 0.8 + 0.2 = 1.0</text>
+<text x="414" y="281" font-size="15" font-weight="normal" fill="#172336">Output gate o = 0.5</text>
+<text x="414" y="318" font-size="15" font-weight="normal" fill="#172336">h = o*tanh(c_new)</text>
+<rect x="762" y="128" width="336" height="362" rx="12" fill="#e1f4e9" stroke="#24633e" stroke-width="1.5"/>
+<text x="779" y="164" font-size="17" font-weight="bold" fill="#24633e">Current token</text>
+<text x="779" y="207" font-size="15" font-weight="normal" fill="#172336">h = 0.3808</text>
+<text x="779" y="244" font-size="15" font-weight="normal" fill="#172336">Toy type embedding = 0.1</text>
+<text x="779" y="281" font-size="15" font-weight="normal" fill="#172336">h + type = 0.4808</text>
+<text x="779" y="318" font-size="15" font-weight="normal" fill="#172336">Focal/background LSTMs differ</text>
+<path d="M371 310 H388 M381 304 L389 310 L381 316" stroke="#536783" stroke-width="2.5" fill="none"/>
+<path d="M736 310 H753 M746 304 L754 310 L746 316" stroke="#536783" stroke-width="2.5" fill="none"/>
+<text x="33" y="528" font-size="14" font-weight="normal" fill="#172336">Blue: inputs   |   Amber: operation   |   Green: result / interpretation</text>
+<text x="33" y="558" font-size="14" font-weight="normal" fill="#172336">Worked toy values explain the computation; they are not trained-model measurements.</text>
+<text x="33" y="588" font-size="12" font-weight="normal" fill="#172336">Source: gameformer/model.py  |  Figure: agent-history</text>
+</g></svg>

@@ -57,6 +57,7 @@ agents in the joint model. The first target is not necessarily the autonomous ca
 | Segment mask | source masks a pooled segment if any constituent point has x=0 | Compatibility requires all points valid; optional partial-segment policy is named. Empty pooled features are zero and stay masked. |
 | Planning interaction directions | source ego responds to prior neighbors; neighbors respond to prior other neighbors | Implement that released objective explicitly; it differs from an all-ordered-pairs reading of Eq. 4. |
 | Paper scores | paper Table 1 includes test-server results | Local diagnostics/validation are distinctly named. Missing SDK/data/checkpoint access cannot establish reproduction. |
+| Raw preprocessing | `gameformer/prepare.py` uses nearest lane seeds/forward paths, resampling and nearby polygon vertices; boundaries use nearest polyline points | This is an explicitly practical preprocessing recipe, not released lane-selection/cache parity. Record `practical_vector_map_v1` in every produced manifest. History gaps remain zero with explicit masks instead of the release's velocity imputation. Do not claim full data-pipeline fidelity until validated on real scenarios. |
 
 Recipe names are `released_joint`, `paper_joint_reconstruction`, `practical_joint`,
 `released_planning`, and `smoke`. The reconstruction combines reported paper
@@ -69,4 +70,3 @@ closed-loop simulator or prediction submission packaging. nuPlan uses the
 separate [GameFormer-Planner](https://github.com/MCZhi/GameFormer-Planner), with
 route generation/refinement and a different compact model (supplement A.5).
 Those capabilities must not be implied by a successful WOMD forward pass.
-

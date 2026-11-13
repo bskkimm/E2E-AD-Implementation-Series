@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=78", "wheel"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -33,7 +33,7 @@ addopts = "-ra"
 [tool.mypy]
 ignore_missing_imports = true
 check_untyped_defs = true
-files = ["gameformer/config.py", "gameformer/geometry.py", "gameformer/tracking.py"]
+files = ["gameformer/config.py", "gameformer/geometry.py", "gameformer/tracking.py", "gameformer/engine.py", "gameformer/data.py"]
 
 [tool.uv.sources]
 torch = { index = "pytorch-cpu" }
@@ -42,4 +42,3 @@ torch = { index = "pytorch-cpu" }
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
-

@@ -10,10 +10,11 @@ import time
 from contextlib import nullcontext
 from dataclasses import asdict
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 from .config import RunConfig
 from .data import SceneDataset, SyntheticDataset, assert_disjoint
@@ -36,6 +37,8 @@ def move(batch, device):
 
 
 def make_loaders(config: RunConfig, generator: torch.Generator):
+    train: Dataset
+    validation: Dataset
     if config.synthetic:
         train = SyntheticDataset(config.model, config.train_size, config.seed)
         validation = SyntheticDataset(config.model, config.validation_size, config.seed + 100000)
@@ -44,10 +47,11 @@ def make_loaders(config: RunConfig, generator: torch.Generator):
             raise ValueError(
                 "Real training requires train_data and validation_data; no synthetic fallback"
             )
-        train = SceneDataset(config.train_data, config.model, "train")
-        validation = SceneDataset(config.validation_data, config.model, "validation")
-        assert_disjoint(train, validation)
-    options = {
+        train_cache = SceneDataset(config.train_data, config.model, "train")
+        validation_cache = SceneDataset(config.validation_data, config.model, "validation")
+        assert_disjoint(train_cache, validation_cache)
+        train, validation = train_cache, validation_cache
+    options: dict[str, Any] = {
         "batch_size": config.microbatch,
         "num_workers": config.workers,
         "pin_memory": config.pin_memory,
@@ -101,7 +105,7 @@ def update(model, optimizer, scaler, batches, config: RunConfig):
     model.train()
     optimizer.zero_grad(set_to_none=True)
     size = sum(batch["ego_state"].shape[0] for batch in batches)
-    totals = {}
+    totals: dict[str, float] = {}
     for batch in batches:
         batch = move(batch, config.device)
         weight = batch["ego_state"].shape[0] / size
@@ -256,7 +260,7 @@ def trajectory_figure(batch, outputs, path):
     axis.set(
         xlabel="local x (m)",
         ylabel="local y (m)",
-        title="Synthetic diagnostic" if path.parent.name else "Trajectory diagnostic",
+        title="Inference-selected trajectory diagnostic",
     )
     axis.set_aspect("equal", adjustable="datalim")
     axis.legend(fontsize=7)
@@ -315,7 +319,8 @@ def train(
         for epoch in range(start_epoch, config.epochs):
             epoch_start = time.perf_counter()
             group = []
-            train_totals, trained = {}, 0
+            train_totals: dict[str, float] = {}
+            trained = 0
             for i, batch in enumerate(train_loader):
                 group.append(batch)
                 if len(group) < config.accumulation and i + 1 < len(train_loader):
@@ -335,7 +340,8 @@ def train(
             metrics["train/learning_rate"] = optimizer.param_groups[0]["lr"]
             if last is not None:
                 image_path = directory / f"epoch-{epoch + 1:03d}.png"
-                trajectory_figure(*last, image_path)
+                last_batch, last_output = last
+                trajectory_figure(last_batch, last_output, image_path)
                 tracker.artifact(image_path)
             scheduler.step()
             completed = epoch + 1

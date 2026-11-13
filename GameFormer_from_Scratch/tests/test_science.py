@@ -1,5 +1,7 @@
 """Analytical fixtures: tests fail on changes to units, masks or joint selection."""
 
+from dataclasses import replace
+
 import torch
 
 from gameformer.config import ModelConfig
@@ -105,3 +107,18 @@ def test_padding_cannot_change_valid_predictions():
         inputs["map_lanes"][:, :, -1] = 999
         after = model(inputs)["trajectories"]
     torch.testing.assert_close(before, after)
+
+
+def test_planning_has_every_loss_term_and_finite_backward():
+    torch.manual_seed(8)
+    config = replace(ModelConfig.smoke(), actors=3, predicted=3, history=20, future=50)
+    inputs = batch(config, 1)
+    # Nearby distinct actors make the directional interaction term active.
+    inputs["neighbors_state"][..., :2] = inputs["ego_state"][:, None, :, :2] + 0.5
+    output = GameFormer(config)(inputs)
+    values = objective(output, inputs, "planning")
+    assert output["trajectories"].shape == (2, 1, 3, 6, 50, 4)
+    assert values["regression"] > 0 and values["classification"] > 0
+    assert values["interaction"] > 0
+    values["loss"].backward()
+    assert all(torch.isfinite(value) for value in values.values())

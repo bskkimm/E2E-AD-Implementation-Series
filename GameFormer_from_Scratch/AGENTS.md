@@ -23,4 +23,3 @@ Keep datasets, checkpoints, environments and tracking stores out of Git.
 
 Current implementation work is in the assigned directory on
 `feat/gameformer-reimplementation` of the containing series repository.
-

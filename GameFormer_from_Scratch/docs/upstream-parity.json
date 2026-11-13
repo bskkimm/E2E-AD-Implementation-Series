@@ -1,0 +1,14 @@
+{
+  "official_revision": "fcb0d4a0f5cbbcecf69f9b9796366d6f5f2ce128",
+  "torch": "2.15.0+cpu",
+  "domain": "fully valid synthetic fixture; D256 E1 K1 M2; eval mode",
+  "mapped_tensors": 114,
+  "max_output_absolute_error": {
+    "trajectories": 7.152557373046875e-07,
+    "scores": 3.5762786865234375e-07
+  },
+  "max_gradient_absolute_error": 4.1961669921875e-05,
+  "local_loss": 359.5766296386719,
+  "upstream_loss": 359.57659912109375,
+  "claim": "operator/parameter/loss/gradient compatibility on this fixture; not trained-checkpoint or dataset parity"
+}

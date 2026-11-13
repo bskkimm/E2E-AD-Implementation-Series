@@ -1,6 +1,7 @@
 """Local GameFormer operators. Axes and release-specific behavior are explicit."""
 
 import math
+from typing import cast
 
 import torch
 from torch import Tensor, nn
@@ -24,6 +25,8 @@ def segment_points(
 
 
 class PositionalEncoding(nn.Module):
+    pe: Tensor
+
     def __init__(self, width: int, length: int, dropout: float):
         super().__init__()
         positions = torch.arange(length)[:, None]
@@ -251,7 +254,8 @@ class GameFormer(nn.Module):
         current = actors[:, : c.predicted, -1]
         trajectories, scores = self.initial_head(content, current)
         all_trajectories, all_scores = [trajectories], [scores]
-        for block in self.interactions:
+        for module in self.interactions:
+            block = cast(InteractionDecoder, module)
             multi = self.future_encoder(trajectories[..., :2], current)
             weighted = multi * scores.softmax(-1)[..., None]
             futures = weighted.sum(2) if c.normalized_future_pool else weighted.mean(2)

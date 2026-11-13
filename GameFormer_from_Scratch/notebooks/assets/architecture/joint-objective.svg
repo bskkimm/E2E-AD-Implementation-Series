@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620">
+<rect width="1100" height="620" fill="#f5f7fb"/>
+<g font-family="DejaVu Sans" fill="#172336">
+<text x="32" y="43" font-size="25" font-weight="bold" fill="#172336">One winning mode for the joint scene</text>
+<text x="33" y="74" font-size="14" font-weight="normal" fill="#172336">Illustrative two-mode example; actual model uses six shared modes.</text>
+<rect x="32" y="128" width="336" height="362" rx="12" fill="#e7eefb" stroke="#2c518c" stroke-width="1.5"/>
+<text x="49" y="164" font-size="17" font-weight="bold" fill="#2c518c">Mean agent distances</text>
+<text x="49" y="207" font-size="15" font-weight="normal" fill="#172336">Mode 0: agent errors (0,10)</text>
+<text x="49" y="244" font-size="15" font-weight="normal" fill="#172336">Mode 1: agent errors (2,2)</text>
+<text x="49" y="281" font-size="15" font-weight="normal" fill="#172336">Joint averages: (5,2)</text>
+<text x="49" y="318" font-size="15" font-weight="normal" fill="#172336">Select mode 1 for both agents</text>
+<rect x="397" y="128" width="336" height="362" rx="12" fill="#fff0d8" stroke="#805100" stroke-width="1.5"/>
+<text x="414" y="164" font-size="17" font-weight="bold" fill="#805100">Diagonal Gaussian NLL</text>
+<text x="414" y="207" font-size="15" font-weight="normal" fill="#172336">Toy residual: dx=2, dy=0</text>
+<text x="414" y="244" font-size="15" font-weight="normal" fill="#172336">sigma_x=sigma_y=1</text>
+<text x="414" y="281" font-size="15" font-weight="normal" fill="#172336">NLL per timestep = 2</text>
+<text x="414" y="318" font-size="15" font-weight="normal" fill="#172336">Mean + 3 horizons -&gt; 8</text>
+<rect x="762" y="128" width="336" height="362" rx="12" fill="#e1f4e9" stroke="#24633e" stroke-width="1.5"/>
+<text x="779" y="164" font-size="17" font-weight="bold" fill="#24633e">Supervise all levels</text>
+<text x="779" y="207" font-size="15" font-weight="normal" fill="#172336">Joint CE uses summed logits</text>
+<text x="779" y="244" font-size="15" font-weight="normal" fill="#172336">Label smoothing = 0.2</text>
+<text x="779" y="281" font-size="15" font-weight="normal" fill="#172336">Planning adds .1 potential</text>
+<text x="779" y="318" font-size="15" font-weight="normal" fill="#172336">1 m interaction: 1/(1+1)=.5</text>
+<path d="M371 310 H388 M381 304 L389 310 L381 316" stroke="#536783" stroke-width="2.5" fill="none"/>
+<path d="M736 310 H753 M746 304 L754 310 L746 316" stroke="#536783" stroke-width="2.5" fill="none"/>
+<text x="33" y="528" font-size="14" font-weight="normal" fill="#172336">Blue: inputs   |   Amber: operation   |   Green: result / interpretation</text>
+<text x="33" y="558" font-size="14" font-weight="normal" fill="#172336">Worked toy values explain the computation; they are not trained-model measurements.</text>
+<text x="33" y="588" font-size="12" font-weight="normal" fill="#172336">Source: gameformer/losses.py  |  Figure: joint-objective</text>
+</g></svg>

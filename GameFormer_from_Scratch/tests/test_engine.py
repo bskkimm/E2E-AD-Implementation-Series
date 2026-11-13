@@ -6,7 +6,8 @@ import pytest
 import torch
 
 from gameformer.config import recipe
-from gameformer.engine import load_checkpoint, train
+from gameformer.engine import build, load_checkpoint, make_loaders, move, train, update
+from gameformer.losses import objective
 from gameformer.tracking import progress_snapshot
 
 
@@ -68,3 +69,55 @@ def test_mlflow_writes_metrics_and_progress_summary(tmp_path):
     assert "Expected finish:" in run.data.tags["mlflow.note.content"]
     assert run.data.metrics["progress/percent"] == 100
     assert (tmp_path / "run/epoch-001.png").is_file()
+
+
+def test_tracking_resume_records_permitted_runtime_changes(tmp_path):
+    from mlflow import MlflowClient
+
+    uri = "sqlite:///" + str(tmp_path / "tracking.db")
+    config = replace(recipe("smoke"), synthetic=True, train_size=2, tracking_uri=uri)
+    first = train(config, tmp_path / "run", stop_after_epoch=1)
+    resumed = train(
+        replace(config, prefetch=3), tmp_path / "run", resume=tmp_path / "run/latest.pt"
+    )
+    assert resumed["run_id"] == first["run_id"]
+    client = MlflowClient(tracking_uri=uri)
+    run = client.get_run(resumed["run_id"])
+    assert run.info.status == "FINISHED"
+    # The original immutable parameter and the current runtime provenance coexist.
+    import json
+
+    assert json.loads(run.data.params["resolved_config"])["prefetch"] == 2
+    assert json.loads(run.data.tags["current_resolved_config"])["prefetch"] == 3
+
+
+def test_accumulation_matches_concatenation_for_uniform_validity():
+    config = replace(recipe("smoke"), synthetic=True, train_size=3, microbatch=2)
+    loader, _ = make_loaders(config, torch.Generator().manual_seed(config.seed))
+    group = list(loader)  # A partial microbatch contributes one of the three samples.
+    _, accumulated, optimizer_a, _, scaler_a = build(config)
+    _, concatenated, optimizer_b, _, scaler_b = build(config)
+    whole = {key: torch.cat([b[key] for b in group]) for key in group[0]}
+    values_a = update(accumulated, optimizer_a, scaler_a, group, config)
+    values_b = update(concatenated, optimizer_b, scaler_b, [whole], config)
+    assert values_a["loss"] == pytest.approx(values_b["loss"], rel=1e-5)
+    for a, b in zip(accumulated.parameters(), concatenated.parameters(), strict=True):
+        if a.grad is not None:
+            torch.testing.assert_close(a.grad, b.grad, atol=2e-5, rtol=2e-4)
+
+
+def test_tiny_batch_learns_with_actual_joint_objective():
+    config = replace(recipe("smoke"), synthetic=True, train_size=2)
+    loader, _ = make_loaders(config, torch.Generator().manual_seed(config.seed))
+    group = [next(iter(loader))]
+    _, model, optimizer, _, scaler = build(config)
+    inputs = move(group[0], config.device)
+    model.eval()
+    with torch.no_grad():
+        before = float(objective(model(inputs), inputs, "joint")["loss"])
+    for _ in range(40):
+        update(model, optimizer, scaler, group, config)
+    model.eval()
+    with torch.no_grad():
+        after = float(objective(model(inputs), inputs, "joint")["loss"])
+    assert after < before * 0.25, (before, after)

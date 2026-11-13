@@ -70,7 +70,14 @@ class Tracker:
                 },
             )
             self.run_id = run.info.run_id
-        self.client.log_param(self.run_id, "resolved_config", json.dumps(config, sort_keys=True))
+            self.client.log_param(
+                self.run_id, "resolved_config", json.dumps(config, sort_keys=True)
+            )
+        # MLflow parameters are immutable. Runtime loader/device settings may change
+        # at resume, so preserve the initial parameter and expose the current one.
+        self.client.set_tag(
+            self.run_id, "current_resolved_config", json.dumps(config, sort_keys=True)
+        )
 
     def log(self, metrics: dict[str, float], step: int) -> None:
         if self.client:
