@@ -41,6 +41,7 @@
   "device": "cpu",
   "precision": "fp32",
   "workers": 0,
+  "loader_timeout": 30.0,
   "prefetch": 2,
   "pin_memory": false,
   "persistent_workers": false,

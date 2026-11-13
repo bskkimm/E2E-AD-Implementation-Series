@@ -89,6 +89,7 @@ class RunConfig:
     device: str = "cpu"
     precision: str = "fp32"
     workers: int = 0
+    loader_timeout: float = 30.0
     prefetch: int = 2
     pin_memory: bool = False
     persistent_workers: bool = False
@@ -123,6 +124,8 @@ class RunConfig:
             raise ValueError("Counts must be positive; workers may be zero")
         if self.learning_rate <= 0 or self.weight_decay < 0 or self.clip_norm <= 0:
             raise ValueError("Invalid optimizer configuration")
+        if self.loader_timeout <= 0:
+            raise ValueError("loader_timeout must be positive (seconds)")
         if not 0 < self.gamma <= 1 or tuple(sorted(set(self.milestones))) != self.milestones:
             raise ValueError("Milestones must be unique/increasing and 0 < gamma <= 1")
         if self.precision == "fp16" and not self.device.startswith("cuda"):

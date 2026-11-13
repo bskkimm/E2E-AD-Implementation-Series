@@ -23,4 +23,28 @@ Plan: `docs/superpowers/plans/2026-11-13-gameformer.md`.
   the tracking test passes. Do not hide the upstream warning globally.
 - Tasks 2–4 remain in progress: CLI/data workflows, benchmarks/tuner, notebook,
   CI, documentation and current-head external review.
-
+- Continued execution: CLI/prepare/benchmark/tuner and the standalone illustrated
+  notebook now exist. Source parity at D256/E1/K1/M2 mapped 114 tensors and
+  matched outputs, objective and parameter gradients; this is operator evidence.
+- 18 final palette PNGs were individually inspected (all labels and arithmetic,
+  masks/gradient barriers and arrow semantics); the notebook is about 601 kB.
+  Assets deterministically regenerate and 24 local definitions pass AST/parity.
+- MLflow runtime-config resume regression: observed an immutable-parameter error
+  when permitted prefetch changed; fixed by preserving the initial parameter
+  and logging the current runtime configuration in a tag. RED -> GREEN.
+- Worker measurement stalled under the sandbox's local IPC restriction. Stopped
+  only this task's process. Added a positive configurable worker timeout and a
+  real slow-worker regression (RED -> GREEN). Worker tuning requires local IPC
+  permission; remaining trials continue after timeout rather than hanging.
+- Added analytical practical-map geometry/signal fixtures, full planning backward,
+  exact partial-group accumulation and actual 40-update tiny-batch learning.
+- Ruling: CPU-only smoke execution is the authorized compute budget; use signed
+  topic commits and a PR, with no dataset download, GPU use or merge. Missing
+  real/GPU evidence limits scientific claims, not ongoing local implementation.
+- CI foundation: independent stages, scientific-core coverage floor 90%, clean
+  wheel installation and installed train/eval pass. Root workflow is installed;
+  full docs/provenance gate and current-head review remain pending.
+- Access: SSH authenticates as bskkimm; gh's stored token is invalid. The GitHub
+  connector reads repository/workflow metadata but branch protection returns 403;
+  rulesets read as empty. Existing pra policy permits live review of own repos,
+  but gh cannot dispatch its workflow. No policy has been weakened or bypassed.

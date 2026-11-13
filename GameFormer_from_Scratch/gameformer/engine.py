@@ -58,7 +58,9 @@ def make_loaders(config: RunConfig, generator: torch.Generator):
     }
     if config.workers:
         options.update(
-            prefetch_factor=config.prefetch, persistent_workers=config.persistent_workers
+            prefetch_factor=config.prefetch,
+            persistent_workers=config.persistent_workers,
+            timeout=config.loader_timeout,
         )
     # Each loader owns a generator; validation must not advance the shuffle RNG.
     return (
@@ -199,6 +201,7 @@ def config_fingerprint(config: RunConfig):
     for name in (
         "device",
         "workers",
+        "loader_timeout",
         "prefetch",
         "pin_memory",
         "persistent_workers",

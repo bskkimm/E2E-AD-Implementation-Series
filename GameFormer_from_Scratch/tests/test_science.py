@@ -115,10 +115,16 @@ def test_planning_has_every_loss_term_and_finite_backward():
     inputs = batch(config, 1)
     # Nearby distinct actors make the directional interaction term active.
     inputs["neighbors_state"][..., :2] = inputs["ego_state"][:, None, :, :2] + 0.5
-    output = GameFormer(config)(inputs)
+    model = GameFormer(config)
+    output = model(inputs)
     values = objective(output, inputs, "planning")
     assert output["trajectories"].shape == (2, 1, 3, 6, 50, 4)
     assert values["regression"] > 0 and values["classification"] > 0
     assert values["interaction"] > 0
     values["loss"].backward()
     assert all(torch.isfinite(value) for value in values.values())
+    assert all(
+        torch.isfinite(parameter.grad).all()
+        for parameter in model.parameters()
+        if parameter.grad is not None
+    )

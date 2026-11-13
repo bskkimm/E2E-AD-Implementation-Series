@@ -177,6 +177,14 @@ def tune(config: RunConfig, max_trials: int = 3, time_limit: float = 30.0, steps
     for candidate in candidates[:max_trials]:
         if trials and time.perf_counter() - started >= time_limit:
             break
+        if candidate.workers:
+            candidate = replace(
+                candidate,
+                loader_timeout=min(
+                    candidate.loader_timeout,
+                    max(0.05, time_limit - (time.perf_counter() - started)),
+                ),
+            )
         trial = {"config": candidate.to_dict()}
         try:
             probe = reference if candidate == baseline else correctness_probe(candidate)
