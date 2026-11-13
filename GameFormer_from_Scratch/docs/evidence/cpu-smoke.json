@@ -3,14 +3,14 @@
     "completed_epochs": 2,
     "global_step": 8,
     "run_id": null,
-    "checkpoint": "outputs/evidence-current/smoke/latest.pt",
+    "checkpoint": "outputs/review-evidence-35ca03d/smoke/latest.pt",
     "data_kind": "synthetic"
   },
   "metrics": {
-    "diagnostic/validation_loss": 211.27361297607422,
+    "diagnostic/validation_loss": 311.99774169921875,
     "diagnostic/valid_steps": 640.0,
     "diagnostic/valid_agents": 8.0,
-    "diagnostic/validation_ADE_m": 8.32374153137207,
-    "diagnostic/validation_FDE_m": 16.678436756134033
+    "diagnostic/validation_ADE_m": 8.291232681274414,
+    "diagnostic/validation_FDE_m": 16.631648063659668
   }
 }

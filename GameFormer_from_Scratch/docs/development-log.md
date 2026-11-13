@@ -97,3 +97,12 @@ Plan: `docs/superpowers/plans/2026-11-13-gameformer.md`.
   The portable renderer fix requires a successful final hosted rerun.
 - Deferred minors: none. No re-review agent; fix regressions/full suite are the
   plan's verification contract, distinct from the unmet trusted-review gate.
+- Signed fix commit: `35ca03d4f65e246a1e7157bc6d7ae2e750546477`.
+  Re-recorded bounded CPU evidence at that source: two smoke epochs, ten timed
+  groups per benchmark scope, four tuner trials and 40 fixed-batch updates.
+  BF16 is explicitly rejected on this host's LSTM backend; no GPU was used.
+- Final local gate: all nine stages passed with refreshed evidence, 32 total
+  tests, 93.98% scientific-core coverage and 165 audited dependencies (zero known
+  advisories, none skipped). Source/config SHA256:
+  `193cf2d9e96c5c0e9e097156d78b980af1a7f910d90b613b2a03499388a1d142`.
+  Final hosted run/current-head review status is maintained in draft PR #1.

@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "recorded_at_utc": "2026-11-13T09:46:31.516662+00:00",
+  "recorded_at_utc": "2026-11-13T10:06:38.319950+00:00",
   "paper_results_reproduced": false,
   "smoke_run": {
-    "code_commit": "c80cd7ebaccd1eb7a7281f2391f9718d37d98d89",
-    "dirty_state": "M GameFormer_from_Scratch/docs/development-log.md\n M GameFormer_from_Scratch/docs/paper-brief.md\n M GameFormer_from_Scratch/docs/superpowers/plans/2026-11-13-gameformer.md\n M GameFormer_from_Scratch/docs/superpowers/specs/2026-11-13-gameformer-design.md\n?? GameFormer_from_Scratch/.pre-commit-config.yaml\n?? GameFormer_from_Scratch/COMMAND_GUIDE.md\n?? GameFormer_from_Scratch/README.md\n?? GameFormer_from_Scratch/ci/\n?? GameFormer_from_Scratch/docs/benchmark.md\n?? GameFormer_from_Scratch/docs/ci-review.md\n?? GameFormer_from_Scratch/docs/data.md\n?? GameFormer_from_Scratch/docs/dependency-audit.json\n?? GameFormer_from_Scratch/docs/evidence/\n?? GameFormer_from_Scratch/docs/results-manifest.json\n?? GameFormer_from_Scratch/docs/results.md\n?? GameFormer_from_Scratch/docs/setup.md\n?? GameFormer_from_Scratch/docs/visual-inspection.md\n?? GameFormer_from_Scratch/scripts/check_all.py\n?? GameFormer_from_Scratch/scripts/check_docs.py\n?? GameFormer_from_Scratch/scripts/hygiene.py\n?? GameFormer_from_Scratch/scripts/record_evidence.py",
-    "source_sha256": "5869ff26116a1729cab7c28f748b1bd61fe46d5a1bb89090b6e153082653e7bb",
+    "code_commit": "35ca03d4f65e246a1e7157bc6d7ae2e750546477",
+    "dirty_state": "M GameFormer_from_Scratch/docs/evidence/cpu-benchmark.json\n M GameFormer_from_Scratch/docs/evidence/cpu-smoke.json\n M GameFormer_from_Scratch/docs/evidence/cpu-tuning.json\n M GameFormer_from_Scratch/docs/evidence/tiny-learning.json",
+    "source_sha256": "193cf2d9e96c5c0e9e097156d78b980af1a7f910d90b613b2a03499388a1d142",
     "source_hash_protocol": "SHA256 of ordered path:SHA256 lines; gameformer/*.py then configs/*.json",
     "config_sha256": "62532ec2d1831cdad75218be761c8e1c92a6682f8f64dfb503262c3014f40305",
-    "checkpoint_sha256": "57f3861b722622d3823131362f4620d8e43e002c04f62eb49ff1784c834bd0bd",
-    "checkpoint_path": "outputs/evidence-current/smoke/latest.pt",
+    "checkpoint_sha256": "ac048aba25cc02d41dadbdac57c83f1452b9ac846f5edd9d02bc1cabc82a8bc9",
+    "checkpoint_path": "outputs/review-evidence-35ca03d/smoke/latest.pt",
     "seed": 3407,
     "dataset": "seeded constant-velocity synthetic scenes",
     "split": {
@@ -24,11 +24,11 @@
     },
     "metric_protocol": "Inference-selected shared final-level mode; ADE per valid timestep, FDE per valid agent at last valid label; meters",
     "metrics": {
-      "diagnostic/validation_loss": 211.27361297607422,
+      "diagnostic/validation_loss": 311.99774169921875,
       "diagnostic/valid_steps": 640.0,
       "diagnostic/valid_agents": 8.0,
-      "diagnostic/validation_ADE_m": 8.32374153137207,
-      "diagnostic/validation_FDE_m": 16.678436756134033
+      "diagnostic/validation_ADE_m": 8.291232681274414,
+      "diagnostic/validation_FDE_m": 16.631648063659668
     },
     "config": {
       "recipe": "smoke",
@@ -93,9 +93,15 @@
       "device": "cpu",
       "gpu": null,
       "cpu_count": 32,
-      "code_commit": "c80cd7ebaccd1eb7a7281f2391f9718d37d98d89",
-      "dirty_state": "M GameFormer_from_Scratch/docs/development-log.md\n M GameFormer_from_Scratch/docs/paper-brief.md\n M GameFormer_from_Scratch/docs/superpowers/plans/2026-11-13-gameformer.md\n M GameFormer_from_Scratch/docs/superpowers/specs/2026-11-13-gameformer-design.md\n?? GameFormer_from_Scratch/.pre-commit-config.yaml\n?? GameFormer_from_Scratch/COMMAND_GUIDE.md\n?? GameFormer_from_Scratch/README.md\n?? GameFormer_from_Scratch/ci/\n?? GameFormer_from_Scratch/docs/benchmark.md\n?? GameFormer_from_Scratch/docs/ci-review.md\n?? GameFormer_from_Scratch/docs/data.md\n?? GameFormer_from_Scratch/docs/dependency-audit.json\n?? GameFormer_from_Scratch/docs/evidence/\n?? GameFormer_from_Scratch/docs/results-manifest.json\n?? GameFormer_from_Scratch/docs/results.md\n?? GameFormer_from_Scratch/docs/setup.md\n?? GameFormer_from_Scratch/docs/visual-inspection.md\n?? GameFormer_from_Scratch/scripts/check_all.py\n?? GameFormer_from_Scratch/scripts/check_docs.py\n?? GameFormer_from_Scratch/scripts/hygiene.py\n?? GameFormer_from_Scratch/scripts/record_evidence.py",
+      "code_commit": "35ca03d4f65e246a1e7157bc6d7ae2e750546477",
+      "dirty_state": "M GameFormer_from_Scratch/docs/evidence/cpu-benchmark.json\n M GameFormer_from_Scratch/docs/evidence/cpu-smoke.json\n M GameFormer_from_Scratch/docs/evidence/cpu-tuning.json\n M GameFormer_from_Scratch/docs/evidence/tiny-learning.json",
       "data_manifests": {},
+      "dataset_identity": {
+        "kind": "synthetic",
+        "seed": 3407,
+        "train_size": 8,
+        "validation_size": 4
+      },
       "playbook_commit": "707c64b138d5e6c534af3d197fd4f278aab03d45",
       "official_commit": "fcb0d4a0f5cbbcecf69f9b9796366d6f5f2ce128",
       "initialization": "random; no pretrained weights",
@@ -105,19 +111,19 @@
   "artifacts": [
     {
       "path": "docs/evidence/cpu-benchmark.json",
-      "sha256": "dcb4233d29c0877a07457cc11d3f3b18a3c1dc01cf553bda24e19c255178a25a"
+      "sha256": "37ad619a674dd193aaf875e59f44e5b60a295d536bbb8d0278e3dd19b5f8f4bf"
     },
     {
       "path": "docs/evidence/cpu-smoke.json",
-      "sha256": "01ef4785207e7749407feeb39c451621288f593fea86991d1fa10ecc0617478a"
+      "sha256": "039f37debd93c607294a004ecb3cb1979c8cc0381c449579f343c339034bd1c8"
     },
     {
       "path": "docs/evidence/cpu-tuning.json",
-      "sha256": "e89e4e380ab47b435be995af4825ca7405d5bcfd48697c684b6fea11d81a8a66"
+      "sha256": "2fc2ecada80a45e38ca519c6f8b3ad76517cd93c99fe46abb5225a7ee34d5139"
     },
     {
       "path": "docs/evidence/tiny-learning.json",
-      "sha256": "7a6105b48a3f8f80c39e9f657d4352b8520a41d782d8a6ae504fa4232247e076"
+      "sha256": "8c4fac041c414b4df72258f014000063070b522c063c333fb5106a1f274af75e"
     },
     {
       "path": "docs/upstream-parity.json",
@@ -125,11 +131,11 @@
     },
     {
       "path": "docs/dependency-audit.json",
-      "sha256": "c1bff420fa6b3a6a2d99344aa348fb0ba975ef31f2885e3a188fabe8185be5fc"
+      "sha256": "d01522dc31075c42c7a8b5dc284e72ca3d6f527440f8ce26546f42fb4d42794d"
     },
     {
       "path": "notebooks/assets/architecture/manifest.json",
-      "sha256": "a4fa70daf560e27cea43dcc9b42247dd6aba17d95abeacacfa466e4b4b5e8f5c"
+      "sha256": "a7e3da66a49d1bbaa4494b579e37c9e3a738afde87ce7e4935e13cd50a1daf89"
     }
   ],
   "unmet_scientific_gates": [

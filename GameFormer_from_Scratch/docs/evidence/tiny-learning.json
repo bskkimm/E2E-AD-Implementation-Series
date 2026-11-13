@@ -1,6 +1,6 @@
 {
   "updates": 40,
-  "before_loss": 435.2189636230469,
-  "after_loss": 63.01767349243164,
+  "before_loss": 397.8822021484375,
+  "after_loss": 58.666404724121094,
   "protocol": "Repeated fixed two-scene training batch; actual all-level joint objective; synthetic overfit, not validation"
 }

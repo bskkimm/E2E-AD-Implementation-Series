@@ -35,12 +35,22 @@ Delivery status must be assessed separately from checked-in policy:
   detect-only setting was changed. `gh auth status` reports the stored token
   invalid, so the CLI cannot dispatch its trusted review workflow or configure
   protection. A schedule alone does not guarantee review of this PR's head.
-- A fresh whole-branch scientific/engineering review is required by the execution
-  plan. Its actual reviewed SHA and findings will be recorded in the PR and
-  execution ledger. A local reviewer is distinct from the installed trusted pra
-  integration, and an AI COMMENT is distinct from a human approval.
+- The fresh whole-branch scientific/engineering reviewer inspected `fd62eff` and
+  found five Important issues. All were accepted and fixed at `35ca03d`, with
+  observed failing-then-passing regressions and 32 passing tests. The
+  [review report](whole-branch-review.md) records every finding and ruling. This
+  local reviewer is distinct from the installed trusted pra integration, and an
+  AI COMMENT is distinct from a human approval.
 
-Until actual hosted checks and current-head review are observed, delivery remains
+All nine local stages passed against source `35ca03d` and refreshed evidence:
+scientific-core coverage 93.98%; exact-lock audit queried 165 dependencies with
+zero known advisories and no skipped packages. The original hosted run passed
+ten matrix jobs but failed host-dependent notebook asset regeneration. The fix
+uses wheel-bundled fonts and Pillow; the current hosted outcome and head SHA are
+recorded in [draft PR #1](https://github.com/bskkimm/E2E-AD-Implementation-Series/pull/1).
+This historical local record is separate from that live PR status.
+
+Until actual hosted checks and trusted current-head review are observed, delivery remains
 an open draft with unmet external gates. A missing reviewer or empty comment list
 does not mean a pass. Restoring valid `gh` authentication is required to request
 `pra cloud run --pr <PR URL> --force` and inspect/configure classic protection.
