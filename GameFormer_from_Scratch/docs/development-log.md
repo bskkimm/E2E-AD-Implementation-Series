@@ -48,3 +48,17 @@ Plan: `docs/superpowers/plans/2026-11-13-gameformer.md`.
   connector reads repository/workflow metadata but branch protection returns 403;
   rulesets read as empty. Existing pra policy permits live review of own repos,
   but gh cannot dispatch its workflow. No policy has been weakened or bypassed.
+- Source audit found planning inference must choose each agent's mode separately
+  (`open_loop_test_utils.select_future`), whereas joint inference sums scores.
+  Added a discriminating two-agent fixture (RED -> GREEN), threaded task through
+  diagnostics/figures, and rebuilt the notebook. Joint behavior is preserved.
+  Full suite: 24 passed; Mypy: five stable source files passed.
+- Full local nine-stage gate passed on 2026-11-13: pre-commit, Ruff/notebook
+  formatting plus actionlint, Mypy, scientific unit coverage (>=90%), integration,
+  standalone notebook/parity, clean wheel/CLI, dependency audit and docs/config.
+  Current suite contains 25 tests. Dependency audit queried all 170 selected
+  dependencies with zero known advisories; +cpu uses the public Torch release
+  for advisory lookup, and unqueried packages now fail the gate (RED -> GREEN).
+- Tasks 1–3 complete. Source measurements are pinned to c80cd7e plus aggregate
+  source/config hashes. Task 4 local implementation/checks complete; fresh review,
+  signed delivery commit, PR, hosted checks and external-review evidence pending.

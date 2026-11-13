@@ -37,6 +37,15 @@ def test_loader_timeout_bounds_a_stalled_worker(monkeypatch):
         next(iter(loader))
 
 
+def test_dependency_audit_rejects_unqueried_packages():
+    from scripts.audit_dependencies import validate_report
+
+    with pytest.raises(RuntimeError, match="unaudited"):
+        validate_report({"dependencies": [{"name": "torch", "skip_reason": "unknown release"}]})
+    with pytest.raises(RuntimeError, match="vulnerabilities"):
+        validate_report({"dependencies": [{"name": "example", "vulns": [{"id": "CVE-example"}]}]})
+
+
 def test_waymo_boundary_preserves_true_zero_coordinates():
     config = ModelConfig.smoke()
     tracks = []

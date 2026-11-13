@@ -53,4 +53,3 @@
   and current-head review remain to be checked. No human approval is fabricated.
 - **Delivery:** source/data/model; training/tracking; notebook; evaluation and
   performance, with independent checks and final current-head review.
-

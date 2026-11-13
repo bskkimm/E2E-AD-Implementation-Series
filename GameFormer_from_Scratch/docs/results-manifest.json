@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-11-13T09:46:31.516662+00:00",
+  "paper_results_reproduced": false,
+  "smoke_run": {
+    "code_commit": "c80cd7ebaccd1eb7a7281f2391f9718d37d98d89",
+    "dirty_state": "M GameFormer_from_Scratch/docs/development-log.md\n M GameFormer_from_Scratch/docs/paper-brief.md\n M GameFormer_from_Scratch/docs/superpowers/plans/2026-11-13-gameformer.md\n M GameFormer_from_Scratch/docs/superpowers/specs/2026-11-13-gameformer-design.md\n?? GameFormer_from_Scratch/.pre-commit-config.yaml\n?? GameFormer_from_Scratch/COMMAND_GUIDE.md\n?? GameFormer_from_Scratch/README.md\n?? GameFormer_from_Scratch/ci/\n?? GameFormer_from_Scratch/docs/benchmark.md\n?? GameFormer_from_Scratch/docs/ci-review.md\n?? GameFormer_from_Scratch/docs/data.md\n?? GameFormer_from_Scratch/docs/dependency-audit.json\n?? GameFormer_from_Scratch/docs/evidence/\n?? GameFormer_from_Scratch/docs/results-manifest.json\n?? GameFormer_from_Scratch/docs/results.md\n?? GameFormer_from_Scratch/docs/setup.md\n?? GameFormer_from_Scratch/docs/visual-inspection.md\n?? GameFormer_from_Scratch/scripts/check_all.py\n?? GameFormer_from_Scratch/scripts/check_docs.py\n?? GameFormer_from_Scratch/scripts/hygiene.py\n?? GameFormer_from_Scratch/scripts/record_evidence.py",
+    "source_sha256": "5869ff26116a1729cab7c28f748b1bd61fe46d5a1bb89090b6e153082653e7bb",
+    "source_hash_protocol": "SHA256 of ordered path:SHA256 lines; gameformer/*.py then configs/*.json",
+    "config_sha256": "62532ec2d1831cdad75218be761c8e1c92a6682f8f64dfb503262c3014f40305",
+    "checkpoint_sha256": "57f3861b722622d3823131362f4620d8e43e002c04f62eb49ff1784c834bd0bd",
+    "checkpoint_path": "outputs/evidence-current/smoke/latest.pt",
+    "seed": 3407,
+    "dataset": "seeded constant-velocity synthetic scenes",
+    "split": {
+      "train": {
+        "size": 8,
+        "seed": 3407
+      },
+      "validation": {
+        "size": 4,
+        "seed": 103407
+      }
+    },
+    "metric_protocol": "Inference-selected shared final-level mode; ADE per valid timestep, FDE per valid agent at last valid label; meters",
+    "metrics": {
+      "diagnostic/validation_loss": 211.27361297607422,
+      "diagnostic/valid_steps": 640.0,
+      "diagnostic/valid_agents": 8.0,
+      "diagnostic/validation_ADE_m": 8.32374153137207,
+      "diagnostic/validation_FDE_m": 16.678436756134033
+    },
+    "config": {
+      "recipe": "smoke",
+      "model": {
+        "width": 32,
+        "heads": 4,
+        "encoder_layers": 1,
+        "levels": 1,
+        "modes": 6,
+        "actors": 4,
+        "predicted": 2,
+        "history": 11,
+        "future": 80,
+        "lanes": 2,
+        "lane_points": 20,
+        "crosswalks": 1,
+        "crosswalk_points": 10,
+        "lane_stride": 10,
+        "crosswalk_stride": 10,
+        "dropout": 0,
+        "partial_segments": false,
+        "legacy_lane_columns": true,
+        "legacy_heading": true,
+        "normalized_future_pool": false
+      },
+      "task": "joint",
+      "seed": 3407,
+      "epochs": 2,
+      "microbatch": 2,
+      "accumulation": 1,
+      "learning_rate": 0.001,
+      "weight_decay": 0.01,
+      "milestones": [
+        1
+      ],
+      "gamma": 0.5,
+      "clip_norm": 5,
+      "device": "cpu",
+      "precision": "fp32",
+      "workers": 0,
+      "loader_timeout": 30.0,
+      "prefetch": 2,
+      "pin_memory": false,
+      "persistent_workers": false,
+      "fused": false,
+      "compile_model": false,
+      "synthetic": true,
+      "train_size": 8,
+      "validation_size": 4,
+      "train_data": "",
+      "validation_data": "",
+      "tracking_uri": "",
+      "timezone": "Asia/Tokyo",
+      "upload_checkpoint": false
+    },
+    "environment": {
+      "python": "3.11.14",
+      "platform": "Linux-6.8.0-85-generic-x86_64-with-glibc2.35",
+      "torch": "2.15.0+cpu",
+      "numpy": "2.4.6",
+      "cuda": null,
+      "device": "cpu",
+      "gpu": null,
+      "cpu_count": 32,
+      "code_commit": "c80cd7ebaccd1eb7a7281f2391f9718d37d98d89",
+      "dirty_state": "M GameFormer_from_Scratch/docs/development-log.md\n M GameFormer_from_Scratch/docs/paper-brief.md\n M GameFormer_from_Scratch/docs/superpowers/plans/2026-11-13-gameformer.md\n M GameFormer_from_Scratch/docs/superpowers/specs/2026-11-13-gameformer-design.md\n?? GameFormer_from_Scratch/.pre-commit-config.yaml\n?? GameFormer_from_Scratch/COMMAND_GUIDE.md\n?? GameFormer_from_Scratch/README.md\n?? GameFormer_from_Scratch/ci/\n?? GameFormer_from_Scratch/docs/benchmark.md\n?? GameFormer_from_Scratch/docs/ci-review.md\n?? GameFormer_from_Scratch/docs/data.md\n?? GameFormer_from_Scratch/docs/dependency-audit.json\n?? GameFormer_from_Scratch/docs/evidence/\n?? GameFormer_from_Scratch/docs/results-manifest.json\n?? GameFormer_from_Scratch/docs/results.md\n?? GameFormer_from_Scratch/docs/setup.md\n?? GameFormer_from_Scratch/docs/visual-inspection.md\n?? GameFormer_from_Scratch/scripts/check_all.py\n?? GameFormer_from_Scratch/scripts/check_docs.py\n?? GameFormer_from_Scratch/scripts/hygiene.py\n?? GameFormer_from_Scratch/scripts/record_evidence.py",
+      "data_manifests": {},
+      "playbook_commit": "707c64b138d5e6c534af3d197fd4f278aab03d45",
+      "official_commit": "fcb0d4a0f5cbbcecf69f9b9796366d6f5f2ce128",
+      "initialization": "random; no pretrained weights",
+      "distributed_workers": 1
+    }
+  },
+  "artifacts": [
+    {
+      "path": "docs/evidence/cpu-benchmark.json",
+      "sha256": "dcb4233d29c0877a07457cc11d3f3b18a3c1dc01cf553bda24e19c255178a25a"
+    },
+    {
+      "path": "docs/evidence/cpu-smoke.json",
+      "sha256": "01ef4785207e7749407feeb39c451621288f593fea86991d1fa10ecc0617478a"
+    },
+    {
+      "path": "docs/evidence/cpu-tuning.json",
+      "sha256": "e89e4e380ab47b435be995af4825ca7405d5bcfd48697c684b6fea11d81a8a66"
+    },
+    {
+      "path": "docs/evidence/tiny-learning.json",
+      "sha256": "7a6105b48a3f8f80c39e9f657d4352b8520a41d782d8a6ae504fa4232247e076"
+    },
+    {
+      "path": "docs/upstream-parity.json",
+      "sha256": "590bdb555c130d7a727787ec625ee6e5ed198a3c9a43535c70a994b0a98a295a"
+    },
+    {
+      "path": "docs/dependency-audit.json",
+      "sha256": "c1bff420fa6b3a6a2d99344aa348fb0ba975ef31f2885e3a188fabe8185be5fc"
+    },
+    {
+      "path": "notebooks/assets/architecture/manifest.json",
+      "sha256": "a4fa70daf560e27cea43dcc9b42247dd6aba17d95abeacacfa466e4b4b5e8f5c"
+    }
+  ],
+  "unmet_scientific_gates": [
+    "real Waymo cache validation",
+    "actual official SDK evaluation",
+    "CUDA precision/gradient/memory checks",
+    "budgeted full training and official split results"
+  ]
+}

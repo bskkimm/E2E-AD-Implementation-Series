@@ -85,4 +85,3 @@ dependency audit and docs/config checks with an always-running aggregate gate.
 Use topic branches, signed commits and reviewable PRs. Verify required checks
 and current-head scientific/engineering review; report unavailable enforcement,
 reviewer, data or GPU access as unmet gates. Never merge without authorization.
-

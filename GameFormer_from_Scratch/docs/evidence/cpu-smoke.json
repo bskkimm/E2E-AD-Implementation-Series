@@ -1,0 +1,16 @@
+{
+  "result": {
+    "completed_epochs": 2,
+    "global_step": 8,
+    "run_id": null,
+    "checkpoint": "outputs/evidence-current/smoke/latest.pt",
+    "data_kind": "synthetic"
+  },
+  "metrics": {
+    "diagnostic/validation_loss": 211.27361297607422,
+    "diagnostic/valid_steps": 640.0,
+    "diagnostic/valid_agents": 8.0,
+    "diagnostic/validation_ADE_m": 8.32374153137207,
+    "diagnostic/validation_FDE_m": 16.678436756134033
+  }
+}

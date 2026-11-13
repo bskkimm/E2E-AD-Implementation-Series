@@ -40,12 +40,12 @@ Interfaces: `GameFormer(ModelConfig)(dict[str,Tensor])` returns stacked
 trajectories/scores; `objective(outputs,batch,task)` returns component tensors;
 `synthetic_sample(config,index,seed)` and `SceneDataset(path,config)` share schema.
 
-- [ ] Write analytical tests for coordinate round trips/valid origin, segment
+- [x] Write analytical tests for coordinate round trips/valid origin, segment
   masks, joint mode/NLL, empty supervision, forward and finite gradients.
-- [ ] Run tests first and confirm the missing implementation failure.
-- [ ] Implement the local data/model/loss interfaces and named JSON recipes.
-- [ ] Run science tests, including tiny-batch learning; record evidence.
-- [ ] Commit the independently testable scientific foundation.
+- [x] Run tests first and confirm the missing implementation failure.
+- [x] Implement the local data/model/loss interfaces and named JSON recipes.
+- [x] Run science tests, including tiny-batch learning; record evidence.
+- [x] Commit the independently testable scientific foundation.
 
 ### Task 2: Training, tracking and performance
 
@@ -53,11 +53,11 @@ Files: `gameformer/{engine,tracking,performance,cli}.py`, integration/CLI tests.
 Consumes Task 1 model/batch/loss; produces train/eval/benchmark/tune CLI and
 epoch-boundary `latest.pt` with complete resume state.
 
-- [ ] Write failing resume, partial-accumulation, ETA, MLflow and benchmark tests.
-- [ ] Implement one shared training step, resume, diagnostics and CLI paths.
-- [ ] Verify resumed vs uninterrupted weights, MLflow on/off and missing assets.
-- [ ] Measure bounded CPU smoke performance, write machine-readable evidence.
-- [ ] Commit training and measurement tooling.
+- [x] Write failing resume, partial-accumulation, ETA, MLflow and benchmark tests.
+- [x] Implement one shared training step, resume, diagnostics and CLI paths.
+- [x] Verify resumed vs uninterrupted weights, MLflow on/off and missing assets.
+- [x] Measure bounded CPU smoke performance, write machine-readable evidence.
+- [x] Commit training and measurement tooling.
 
 ### Task 3: Illustrated standalone notebook
 
@@ -65,22 +65,21 @@ Files: `gameformer/teaching.py`, notebook, editable assets and notebook tests.
 Consumes Task 1 definitions and Task 2 infrastructure; no production model import
 is allowed as a substitute for notebook architecture definitions.
 
-- [ ] Publish exact figure and definition inventories; write failing notebook
+- [x] Publish exact figure and definition inventories; write failing notebook
   freshness/attachments/parity checks.
-- [ ] Generate worked SVG/PNG figures and definition cells; inspect every image.
-- [ ] Execute fresh offline CPU notebook; compare model/loss/gradient parity.
-- [ ] Verify deterministic regeneration, numerical examples and empty outputs.
-- [ ] Commit the teaching resource.
+- [x] Generate worked SVG/PNG figures and definition cells; inspect every image.
+- [x] Execute fresh offline CPU notebook; compare model/loss/gradient parity.
+- [x] Verify deterministic regeneration, numerical examples and empty outputs.
+- [x] Commit the teaching resource.
 
 ### Task 4: CI, documentation and delivery
 
 Files: workflow, pre-commit, README, COMMAND_GUIDE, guides/results manifest/tests.
 Consumes all prior interfaces.
 
-- [ ] Add independent lint/type/unit/integration/notebook/package/audit/docs jobs
+- [x] Add independent lint/type/unit/integration/notebook/package/audit/docs jobs
   plus an always-running gate, SHA-pinned actions and CPU Python matrix.
-- [ ] Run full local gate and clean environment package/CLI tests.
+- [x] Run full local gate and clean environment package/CLI tests.
 - [ ] Obtain a fresh scientific/engineering code review and fix valid findings.
 - [ ] Commit, push topic branch, open PR and check CI/reviewer freshness when
   authorized access allows; report any unmet external gate exactly.
-
